@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <style>
+    .text {
+        display: none;
+        font-size: 30px;
+        }
+    #btn {
+        width: 200px;
+        height: 50px;
+        }
+    </style>
+
+    <title>英文法適応支援</title>
+    
+
+    <input type="button" id="btn" value="文法確認のインタラクション" onclick="location.href='index.html'" />
+    <input type="button" id="btn" value="インタラクション" onclick="location.href='index2.html'" />
+    <input type="button" id="btn" value="インタラクション2回目" onclick="location.href='index3.html'" />
+    <p>
+        <div id="allText">
+            <div id="text1" class="text">
+                インタラクション2回目1
+            </div>
+            <div id="text2" class="text">
+                インタラクション2回目2
+            </div>
+            <div id="text2" class="text">
+                インタラクション2回目3
+            </div>
+        </div>
+    </p>
+
+    <input type="button" value="戻る" onclick="clickBtnBack()" />
+    <input type="button" value="次へ" onclick="clickBtnNext()" />
+    <script type="text/javascript" src="index.js"></script>
+</head>
+<body>
+    
+</body>
+</html>
