@@ -1,5 +1,6 @@
 var page = 1;
 var allText = document.getElementById('allText').getElementsByTagName('div');
+var _tts;
 
 function clickBtnNext(){    
     if(page >= allText.length) return;
@@ -23,3 +24,48 @@ function clickBtnBack(){
     page--;
 }
 allText[0].style.display = "block";
+
+
+var session = new QiSession("192.168.1.14:80");
+    session.socket().on('connect', function () {
+        console.log('QiSession connected!');
+        // now you can start using your QiSession
+    }).on('disconnect', function () {
+        console.log('QiSession disconnected!');
+    });
+
+    session.service("ALTextToSpeech").done((tts) => {
+        _tts = tts;        
+    }).fail((error) => {
+            console.log("An error occurred: " + error);
+    });
+
+    var signalLink;
+    var serviceDirectory;
+
+    function onServiceAdded(serviceId, serviceName)
+    {
+        console.log("New service", serviceId, serviceName);
+        serviceDirectory.serviceAdded.disconnect(signalLink);
+    }
+
+    session.service("ServiceDirectory").done(function (sd) {
+        serviceDirectory = sd;
+        serviceDirectory.serviceAdded.connect(onServiceAdded).done(function (link) {
+            signalLink = link;
+        }).fail(function (error) {
+            console.log("An error occurred: " + error);
+        });
+    });
+    session.service("ALMemory").done(function (ALMemory) {
+        ALMemory.subscriber("FrontTactilTouched").done(function (subscriber) {
+            // subscriber.signal is a signal associated to "FrontTactilTouched"
+            subscriber.signal.connect(function (state) {
+                console.log(state == 1 ? "You just touched my head!" : "Bye bye!");
+            });
+        });
+    });
+
+    function clickBtn(){   
+        _tts.say("hello");
+    }
