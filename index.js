@@ -1,6 +1,6 @@
 var page = 1;
 var allText = document.getElementById('allText').getElementsByTagName('div');
-var _tts;
+//var _tts;
 
 function clickBtnNext(){    
     if(page >= allText.length) return;
@@ -25,7 +25,7 @@ function clickBtnBack(){
 }
 allText[0].style.display = "block";
 
-
+/*
 var session = new QiSession("192.168.1.14:80");
     session.socket().on('connect', function () {
         console.log('QiSession connected!');
@@ -66,6 +66,9 @@ var session = new QiSession("192.168.1.14:80");
         });
     });
 
+    */
     function clickBtn(){   
-        _tts.say("hello");
+        //_tts.say("hello");
+        console.log("hello");
     }
+    
