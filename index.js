@@ -1,9 +1,9 @@
 var page = 1;
-var allText = document.getElementById('allText').getElementsByTagName('div');
+var allText = document.getElementById('allText1').getElementsByTagName('div');
 var _tts;
 var _lang;
-var jaText = "彼は野球が上手だよ。";
-var enText = "he plays baseball very well."; //he seems to be good at studying too.";
+var jaText = "彼は野球が上手だよ。"; //一時的
+var enText = "he plays baseball very well."; //一時的
 
 function clickBtnNext(){     //ページを進める
     if(page >= allText.length) return;
@@ -95,4 +95,22 @@ var session = new QiSession("192.168.1.14:80");
             console.log("An error occurred: " + error);
         });
         _tts.say(text);
+    }
+    
+    function moveScreen(screenNum){
+        allText[page-1].style.display = "none";
+        //console.log(screenNum);
+        switch (screenNum){
+            case 1:
+                allText = document.getElementById('allText1').getElementsByTagName('div');
+                break;
+            case 2:
+                allText = document.getElementById('allText2').getElementsByTagName('div');
+                break;
+            case 3:
+                allText = document.getElementById('allText3').getElementsByTagName('div');
+                break;
+        }
+        allText[0].style.display = "block"; //1ページ目を表示
+        page = 1; //ページ変数を初期化
     }
