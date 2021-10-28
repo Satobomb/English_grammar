@@ -28,7 +28,7 @@ function clickBtnBack(){    //ページを戻す
 allText[0].style.display = "block"; //1ページ目を表示
 
 //↓Naoを動かす用
-
+/*
 var session = new QiSession("192.168.1.14:80");
     session.socket().on('connect', function () {
         console.log('QiSession connected!');
@@ -96,7 +96,7 @@ var session = new QiSession("192.168.1.14:80");
         });
         _tts.say(text);
     }
-    
+*/
     function moveScreen(screenNum){
         allText[page-1].style.display = "none";
         //console.log(screenNum);
