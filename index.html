@@ -13,6 +13,8 @@
     <input type="button" class="btn" value="インタラクション" onclick="moveScreen(2)" />
     <input type="button" class="btn" value="インタラクション２回目" onclick="moveScreen(3)" />
     
+</head>
+<body>
     <p>
         <div id="allText1">
             <div id="text1" class="text">
@@ -43,7 +45,7 @@
         </div>
         <div id="allText2">
             <div id="text1" class="text">
-                表示する文とロボットが喋る内容は文法確認のインタラクションによって変わる<p>
+                ロボットが喋る内容は文法確認のインタラクションによって変わる<p>
                 A: 彼は野球が上手だよ。<p>
                 A: He plays baseball very well.<p>
                 B: すごいね、彼は勉強も得意らしいよ。<p>
@@ -71,7 +73,7 @@
         </div>
         <div id="allText3">
             <div id="text1" class="text">
-                表示する文とロボットが喋る内容はインタラクションによって変わる<p>
+                ロボットが喋る内容はインタラクションによって変わる<p>
                 A: 彼は野球が上手だよ。<p>
                 A: He plays baseball very well.<p>
                 B: すごいね、彼は勉強も得意らしいよ。<p>
@@ -100,13 +102,12 @@
 
     <input type="button" value="戻る" onclick="clickBtnBack()" />
     <input type="button" value="次へ" onclick="clickBtnNext()" />
+    <input type="button" value="間違い" onclick="graspMistake()" />
+    <input type="button" value="話す" onclick="speak()" />
     <!--<input type="button" value="日本語で話す" onclick="speakJapanese()" />
     <input type="button" value="英語で話す" onclick="speakEnglish()" />
     -->
     <script type="text/javascript" src="index.js"></script>
-</head>
-<body>
-    
 </body>
 </html>
 
