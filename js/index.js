@@ -62,7 +62,7 @@ allText[0].style.display = "block"; //1ページ目を表示
 
 //↓Naoを動かす用
 /*
-var session = new QiSession("192.168.1.14:80");
+var session = new QiSession("192.168.1.26:80");
     session.socket().on('connect', function () {
         console.log('QiSession connected!');
         // now you can start using your QiSession
@@ -129,8 +129,7 @@ var session = new QiSession("192.168.1.14:80");
         });
         _tts.say(text);
     }
-    function speak(){
+    function speak(){}
+    */
 
-    }
-*/
     
