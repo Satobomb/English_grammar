@@ -39,15 +39,18 @@
   // Start recording and send the microphone input to the Speech API.
   // Ensure SoX is installed, see https://www.npmjs.com/package/node-record-lpcm16#dependencies
 
-  function voiceRec(){
+  //function voiceRec(){
   recorder
     .record({
       sampleRateHertz: sampleRateHertz,
       threshold: 0,
       // Other options, see https://www.npmjs.com/package/node-record-lpcm16#options
       verbose: false,
-      recordProgram: 'rec', // Try also "arecord" or "sox"
-      silence: '10.0',
+      recordProgram: 'sox', // Try also "arecord" or "sox"
+      thresholdStart: 0.2,
+      thresholdEnd: 0.1,
+      silence: '0.1',
+      
     })
     .stream()
     .on('error', console.error)
@@ -55,5 +58,9 @@
 
   console.log('Listening, press Ctrl+C to stop.');
 
-}
-voiceRec();
+//}
+const recording = recorder.record();
+//voiceRec();
+setTimeout(() => {
+  recording.pause()
+}, 3000);
