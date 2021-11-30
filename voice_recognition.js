@@ -59,8 +59,9 @@
   console.log('Listening, press Ctrl+C to stop.');
 
 //}
-const recording = recorder.record();
 //voiceRec();
-setTimeout(() => {
-  recording.pause()
-}, 3000);
+// const recording = recorder.record();
+// recording.stop();
+// setTimeout(() => {
+//   recording.pause()
+// }, 3000);
