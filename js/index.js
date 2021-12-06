@@ -57,6 +57,10 @@ function moveScreen(screenNum){
     page = 1; //ページ変数を初期化
 }
 
+function speak(){
+    socket.emit("SPEAKING");
+}
+
 function voiceRecSt(){
     socket.emit("vRecStSign");
 }
@@ -64,6 +68,12 @@ function voiceRecSt(){
 //     socket.emit("vRecFnSign");
 // }
 allText[0].style.display = "block"; //1ページ目を表示
+
+
+socket.on("SPEECH", (lang, msg) => {
+    speech(lang, msg);
+});
+
 
 //↓Naoを動かす用
 
@@ -135,4 +145,10 @@ var session = new QiSession("192.168.1.14:80");
         _tts.say(text);
     }
 
-
+function speech(lang, msg){   
+        console.log(msg);
+        _tts.setLanguage(lang).done().fail(function (error) { //言語の設定
+            console.log("An error occurred: " + error);
+        });
+        _tts.say(msg);
+    }

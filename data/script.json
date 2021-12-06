@@ -1,0 +1,18 @@
+[
+    {
+        "command": "speak",
+        "lang": "Japanese",
+        "msg": "おはよう"
+    },
+    {
+        "command": "speak",
+        "lang": "Japanese",
+        "msg": "こんにちは"
+    },
+    {
+        "command": "speak", 
+        "lang": "Japanese",
+        "msg": "こんばんは"
+    }
+    
+]

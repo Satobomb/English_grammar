@@ -71,6 +71,27 @@ const recognizeStream = client
     )
   );
 
+
+
+//双方向通信
+
+var io = socketio(server);
+
+io.sockets.on('connection', function (socket) {
+  socket.on('vRecStSign', () => {
+    console.log("音声認識開始");
+    voiceRec();
+  });
+  socket.on('SPEAKING', () => {
+    console.log("話す");
+    startSpeaking("A");
+
+  });
+    socket.on('client_to_server', function (data) {
+        io.sockets.emit('server_to_client', { value: data.value });
+    });
+});
+
 function voiceRec(){
   recorder
     .record({
@@ -86,26 +107,29 @@ function voiceRec(){
 
     console.log('Listening, press Ctrl+C to stop.');
 }
-// const recording = recorder.record();
-// function voiceRecFn(){
-//   recording.stop();
-//}
 
-//双方向通信
+function startSpeaking(mode){
+  switch (mode) {
+    case "A":
+      doJsonCommands("./data/script.json");
+      break;
+  }
+}
 
-var io = socketio(server);
-
-io.sockets.on('connection', function (socket) {
-  socket.on('vRecStSign', () => {
-    console.log("音声認識開始");
-    voiceRec();
-  });
-  // socket.on('vRecFnSign', () => {
-  //   console.log("音声認識終了");
-  //   voiceRecFn();
-  // });
-    socket.on('client_to_server', function (data) {
-        io.sockets.emit('server_to_client', { value: data.value });
-    });
-});
-
+function doJsonCommands(jsonPath){
+  const jsonObject = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
+  for (const obj of jsonObject) {
+    switch (obj.command) {
+      case "speak": 
+        speakScript(obj.lang, obj.msg);
+        break;
+      default: 
+        console.log("undefined command : " + obj.command);
+    }
+  }
+}
+function speakScript(lang, msg) {
+  console.log(msg);
+  io.emit("SPEECH", lang, msg);
+  
+}
