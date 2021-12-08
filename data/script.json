@@ -2,17 +2,17 @@
     {
         "command": "speak",
         "lang": "Japanese",
-        "msg": "おはよう"
+        "msg": "英語のインタラクションを始めるよ"
     },
     
     {
         "command": "speak", 
-        "lang": "English",
-        "msg": "my name is nao."
+        "lang": "Japanese",
+        "msg": "僕と一緒に頑張ろうね"
     },
     {
         "command": "speak",
         "lang": "Japanese",
-        "msg": "こんにちは"
+        "msg": "それじゃあ、始めるよ"
     }
 ]

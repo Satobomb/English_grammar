@@ -2,7 +2,7 @@ var socketio = require('socket.io');
 let http = require("http");
 let fs = require("fs");
 let server = http.createServer();
-
+let syncFlag = false;
 
 server.on("request", getJs);
 server.listen(8080);
@@ -47,31 +47,46 @@ const recorder = require('node-record-lpcm16'); //soxをNode.jsから使うた�
 const speech = require('@google-cloud/speech'); //Cloud Speech-to-text APIを使うためのモジュール
 const client = new speech.SpeechClient();
 
-const encoding = 'LINEAR16';
-const sampleRateHertz = 16000;
-const languageCode = 'ja-JP';
-
-const request = {
-  config: {
-    encoding: encoding,
-    sampleRateHertz: sampleRateHertz,
-    languageCode: languageCode,
-  },
-  interimResults: true, 
+const recorderConfig = {
+  sampleRate: 16000,
+	channels: 1,
+	threshold: 0,
+	endOnSilence: true,
+	silence: '3.0',
 };
 
-const recognizeStream = client
-  .streamingRecognize(request)
-  .on('error', console.error)
-  .on('data', data =>
-    process.stdout.write(
-      data.results[0] && data.results[0].alternatives[0]
-        ? `Transcription: ${data.results[0].alternatives[0].transcript}\n`
-        : '\n\nReached transcription time limit, press Ctrl+C\n'
-    )
-  );
+const recognizeSync = (lc) => {
+	return new Promise((resolve, reject) => {
+		const request = {
+			config: {
+				encoding: 'LINEAR16',
+				sampleRateHertz: 16000,
+				languageCode: lc,
+			},
+			interimResults: false,
+		};
 
-let syncFlag = false;
+		const recording = recorder.record(recorderConfig);
+
+		const recognizeStream = client
+			.streamingRecognize(request)
+			.on('error', reject)
+			.on('end', resolve)
+			.on('data', data => {
+				process.stdout.write(
+					data.results[0] && data.results[0].alternatives[0]
+						? `Transcription: ${data.results[0].alternatives[0].transcript}\n`
+						: '\n\nReached transcription time limit, press Ctrl+C\n'
+				)
+				resolve(data.results[0].alternatives[0].transcript);
+				recording.stop();
+			});
+
+		recording.stream()
+						 .on('error', reject)
+						 .pipe(recognizeStream);
+	})
+}
 
 //双方向通信
 
@@ -79,7 +94,7 @@ var io = socketio(server);
 
 io.sockets.on('connection', function (socket) {
   socket.on('VOICE_REC', () => {
-    console.log("音声認識開始");
+    console.log("Start Voice Recognition");
     voiceRec();
   });
   socket.on('SPEAKING_TO_SERVER', () => {
@@ -90,25 +105,21 @@ io.sockets.on('connection', function (socket) {
     //console.log("話した");
     syncFlag = true;
   });
+  
     socket.on('client_to_server', function (data) {
         io.sockets.emit('server_to_client', { value: data.value });
     });
 });
 
-function voiceRec(){
-  recorder
-    .record({
-      sampleRateHertz: sampleRateHertz,
-      threshold: 0,
-      verbose: false,
-      recordProgram: 'rec', 
-      silence: '10.0',
-    })
-    .stream()
-    .on('error', console.error)
-    .pipe(recognizeStream);
-
-    console.log('Listening, press Ctrl+C to stop.');
+async function voiceRec(){
+	(async () => {
+		const result = await recognizeSync('en-US');
+		if (result != null) {
+			console.log(`result : ${result}`);
+		} else {
+			console.log(`bad recognize, one more time.`);
+		}
+	})();
 }
 
 async function startSpeaking(mode){
