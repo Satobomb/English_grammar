@@ -5,7 +5,10 @@ var _lang;
 var miss_arr = []; //[0]は使わない ３単元、過去形、受動態、助動詞
 var arr_len = 4;
 var jaText = "彼は野球が上手だよ。"; //一時的
-var enText = "he plays baseball very well."; //一時的
+var enText = "threshold"; //一時的
+//サーバと接続(connect)する
+var socket = io.connect();
+
 
 for(var i = 0;i<=arr_len;i++) miss_arr[i] = 0; //0が正解、１が不正解
 
@@ -41,7 +44,7 @@ function moveScreen(screenNum){
     //console.log(screenNum);
     switch (screenNum){
         case 1:
-            allText = document.getElementById('allText1').getElementsByTagName('div');
+            allText = document.getElementById('allText1').getElementsByTagName('div');            
             break;
         case 2:
             allText = document.getElementById('allText2').getElementsByTagName('div');
@@ -55,14 +58,26 @@ function moveScreen(screenNum){
 }
 
 function speak(){
-    
+    socket.emit("SPEAKING_TO_SERVER");
 }
 
+function voiceRecSt(){
+    socket.emit("VOICE_REC");
+}
+// function voiceRecFn(){
+//     socket.emit("vRecFnSign");
+// }
 allText[0].style.display = "block"; //1ページ目を表示
 
+
+socket.on("SPEAKING_TO_CLIENT", (lang, msg) => {
+    speech(lang, msg);
+});
+
+
 //↓Naoを動かす用
-/*
-var session = new QiSession("192.168.1.26:80");
+
+var session = new QiSession("192.168.1.14:80");
     session.socket().on('connect', function () {
         console.log('QiSession connected!');
         // now you can start using your QiSession
@@ -129,7 +144,13 @@ var session = new QiSession("192.168.1.26:80");
         });
         _tts.say(text);
     }
-    function speak(){}
-    */
 
-    
+function speech(lang, msg){   
+        console.log(msg);
+        //console.log(lang);
+        _tts.setLanguage(lang).done().fail(function (error) { //言語の設定
+            console.log("An error occurred: " + error);
+        });
+        _tts.say(msg);
+        socket.emit("SPOKE");
+    }

@@ -12,6 +12,7 @@
   "dependencies": {
     "@google-cloud/speech": "^4.9.0",
     "http": "^0.0.1-security",
-    "node-record-lpcm16": "^1.0.1"
+    "node-record-lpcm16": "^1.0.1",
+    "socket.io": "^4.3.2"
   }
 }
