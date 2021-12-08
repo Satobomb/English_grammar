@@ -5,7 +5,7 @@ var _lang;
 var miss_arr = []; //[0]は使わない ３単元、過去形、受動態、助動詞
 var arr_len = 4;
 var jaText = "彼は野球が上手だよ。"; //一時的
-var enText = "he plays baseball very well."; //一時的
+var enText = "threshold"; //一時的
 //サーバと接続(connect)する
 var socket = io.connect();
 
@@ -58,11 +58,11 @@ function moveScreen(screenNum){
 }
 
 function speak(){
-    socket.emit("SPEAKING");
+    socket.emit("SPEAKING_TO_SERVER");
 }
 
 function voiceRecSt(){
-    socket.emit("vRecStSign");
+    socket.emit("VOICE_REC");
 }
 // function voiceRecFn(){
 //     socket.emit("vRecFnSign");
@@ -70,7 +70,7 @@ function voiceRecSt(){
 allText[0].style.display = "block"; //1ページ目を表示
 
 
-socket.on("SPEECH", (lang, msg) => {
+socket.on("SPEAKING_TO_CLIENT", (lang, msg) => {
     speech(lang, msg);
 });
 
@@ -147,8 +147,10 @@ var session = new QiSession("192.168.1.14:80");
 
 function speech(lang, msg){   
         console.log(msg);
+        //console.log(lang);
         _tts.setLanguage(lang).done().fail(function (error) { //言語の設定
             console.log("An error occurred: " + error);
         });
         _tts.say(msg);
+        socket.emit("SPOKE");
     }

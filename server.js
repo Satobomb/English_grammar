@@ -71,21 +71,24 @@ const recognizeStream = client
     )
   );
 
-
+let syncFlag = false;
 
 //双方向通信
 
 var io = socketio(server);
 
 io.sockets.on('connection', function (socket) {
-  socket.on('vRecStSign', () => {
+  socket.on('VOICE_REC', () => {
     console.log("音声認識開始");
     voiceRec();
   });
-  socket.on('SPEAKING', () => {
-    console.log("話す");
-    startSpeaking("A");
-
+  socket.on('SPEAKING_TO_SERVER', () => {
+    //console.log("話す");
+    startSpeaking("intro");
+  });
+  socket.on('SPOKE', () => {
+    //console.log("話した");
+    syncFlag = true;
   });
     socket.on('client_to_server', function (data) {
         io.sockets.emit('server_to_client', { value: data.value });
@@ -108,20 +111,20 @@ function voiceRec(){
     console.log('Listening, press Ctrl+C to stop.');
 }
 
-function startSpeaking(mode){
+async function startSpeaking(mode){
   switch (mode) {
-    case "A":
-      doJsonCommands("./data/script.json");
+    case "intro":
+      await doJsonCommands("./data/script.json");
       break;
   }
 }
 
-function doJsonCommands(jsonPath){
+async function doJsonCommands(jsonPath){
   const jsonObject = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
   for (const obj of jsonObject) {
     switch (obj.command) {
       case "speak": 
-        speakScript(obj.lang, obj.msg);
+        await speakScript(obj.lang, obj.msg);
         break;
       default: 
         console.log("undefined command : " + obj.command);
@@ -130,6 +133,15 @@ function doJsonCommands(jsonPath){
 }
 function speakScript(lang, msg) {
   console.log(msg);
-  io.emit("SPEECH", lang, msg);
-  
+  // console.log(lang);
+  return new Promise((resolve) => {
+    io.emit("SPEAKING_TO_CLIENT", lang, msg);
+    let checkFlagDemon = setInterval(() => {
+      if(syncFlag == true){
+        syncFlag = false;
+        clearInterval(checkFlagDemon);
+        resolve("spoke");
+      }
+    }, 500);
+  });
 }

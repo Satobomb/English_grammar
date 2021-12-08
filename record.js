@@ -13,7 +13,7 @@ recorder.record({
   thresholdStart: null,
   thresholdEnd: null,
   recorder: 'sox',
-  silence: '1.0',
+  silence: '2.0',
   device: null,
   audioType: "wav"
 })

@@ -4,15 +4,15 @@
         "lang": "Japanese",
         "msg": "おはよう"
     },
+    
+    {
+        "command": "speak", 
+        "lang": "English",
+        "msg": "my name is nao."
+    },
     {
         "command": "speak",
         "lang": "Japanese",
         "msg": "こんにちは"
-    },
-    {
-        "command": "speak", 
-        "lang": "Japanese",
-        "msg": "こんばんは"
     }
-    
 ]
