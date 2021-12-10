@@ -3,6 +3,7 @@ let http = require("http");
 let fs = require("fs");
 let server = http.createServer();
 let syncFlag = false;
+let miss_arr = [];
 
 server.on("request", getJs);
 server.listen(8080);
@@ -94,15 +95,12 @@ var io = socketio(server);
 
 io.sockets.on('connection', function (socket) {
   socket.on('VOICE_REC', () => {
-    console.log("Start Voice Recognition");
     voiceRec();
   });
   socket.on('SPEAKING_TO_SERVER', () => {
-    //console.log("話す");
-    startSpeaking("intro");
+    startSpeaking("first");
   });
   socket.on('SPOKE', () => {
-    //console.log("話した");
     syncFlag = true;
   });
   
@@ -111,21 +109,26 @@ io.sockets.on('connection', function (socket) {
     });
 });
 
-async function voiceRec(){
-	(async () => {
+	async function voiceRec(){
 		const result = await recognizeSync('en-US');
 		if (result != null) {
 			console.log(`result : ${result}`);
 		} else {
 			console.log(`bad recognize, one more time.`);
 		}
-	})();
-}
+	}
 
 async function startSpeaking(mode){
   switch (mode) {
-    case "intro":
-      await doJsonCommands("./data/script.json");
+    case "first":
+      //await doJsonCommands("./data/script.json");
+      await firstInteraction();
+      break;
+    case "second":
+      await secondInteraction();
+      break;
+    case "third":
+      await thirdInteraction();
       break;
   }
 }
@@ -144,15 +147,34 @@ async function doJsonCommands(jsonPath){
 }
 function speakScript(lang, msg) {
   console.log(msg);
-  // console.log(lang);
   return new Promise((resolve) => {
     io.emit("SPEAKING_TO_CLIENT", lang, msg);
     let checkFlagDemon = setInterval(() => {
       if(syncFlag == true){
         syncFlag = false;
         clearInterval(checkFlagDemon);
-        resolve("spoke");
+        resolve();
       }
     }, 500);
   });
+}
+async function firstInteraction(){
+  const jsonObject = JSON.parse(fs.readFileSync("./data/first_interaction.json", "utf-8"));
+  for (const obj of jsonObject) {
+    switch (obj.command) {
+      case "speak": 
+        await speakScript(obj.lang, obj.msg);
+        await voiceRec();
+        break;
+      default: 
+        console.log("undefined command : " + obj.command);
+    }
+  }
+  speakScript("Japanese", "お疲れさま、最初のインタラクションは終わりだよ。");
+}
+async function secondInteraction(){
+  
+}
+async function thirdInteraction(){
+  
 }

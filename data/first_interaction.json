@@ -1,0 +1,23 @@
+[
+    {
+        "command": "speak",
+        "lang": "English",
+        "msg": "he plays baseball very well."
+    },
+    
+    {
+        "command": "speak", 
+        "lang": "English",
+        "msg": "I saw him at the park near the station yesterday."
+    },
+    {
+        "command": "speak",
+        "lang": "English",
+        "msg": "yes, but this chair is made of iron."
+    },
+    {
+        "command": "speak",
+        "lang": "English",
+        "msg": "can you help me after school?"
+    }
+]

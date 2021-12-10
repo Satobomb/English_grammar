@@ -1,10 +1,10 @@
 {
-  "name": "voice_recognition",
+  "name": "english_grammer",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node voice_recognition.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
