@@ -4,8 +4,6 @@ var _tts;
 var _lang;
 var miss_arr = []; //[0]は使わない ３単元、過去形、受動態、助動詞
 var arr_len = 4;
-var jaText = "彼は野球が上手だよ。"; //一時的
-var enText = "threshold"; //一時的
 //サーバと接続(connect)する
 var socket = io.connect();
 
@@ -64,11 +62,8 @@ function speak(){
 function voiceRecSt(){
     socket.emit("VOICE_REC");
 }
-// function voiceRecFn(){
-//     socket.emit("vRecFnSign");
-// }
-allText[0].style.display = "block"; //1ページ目を表示
 
+allText[0].style.display = "block"; //1ページ目を表示
 
 socket.on("SPEAKING_TO_CLIENT", (lang, msg) => {
     speech(lang, msg);
@@ -87,9 +82,6 @@ var session = new QiSession("192.168.1.14:80");
 
     session.service("ALTextToSpeech").done((tts) => {
         _tts = tts;   
-        
-       
-
         _tts.getLanguage().done(function (lang) { //言語の取得
             console.log("language is " + lang + " now");
             _lang = lang;
@@ -126,24 +118,6 @@ var session = new QiSession("192.168.1.14:80");
             });
         });
     });
-
-    function speakJapanese(){   
-        var text = jaText;
-        console.log(text);
-        _tts.setLanguage("Japanese").done().fail(function (error) { //言語の設定
-            console.log("An error occurred: " + error);
-        });
-        _tts.say(text);
-    }
-    
-    function speakEnglish(){   
-        var text = enText;
-        console.log(text);
-        _tts.setLanguage("English").done().fail(function (error) { //言語の設定
-            console.log("An error occurred: " + error);
-        });
-        _tts.say(text);
-    }
 
 function speech(lang, msg){   
         console.log(msg);
