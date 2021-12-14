@@ -1,0 +1,50 @@
+[
+    {
+        "lang": "English",
+        "msg": "he plays baseball very well.",
+        "num": 0,
+        "part": "A"
+    },
+    {
+        "lang": "English",
+        "msg": "wow, he seem to be good at studing too.",
+        "num": 0,
+        "part": "B"
+    },
+    {
+        "lang": "English",
+        "msg": "I saw him at the park near the station yesterday.",
+        "num": 1,
+        "part": "A"
+    },
+    {
+        "lang": "English",
+        "msg": "really? he says that he went home directly just now.",
+        "num": 1,
+        "part": "B"
+    },
+    {
+        "lang": "English",
+        "msg": "is this table made of wood?",
+        "num": 2,
+        "part": "A"
+    },
+    {
+        "lang": "English",
+        "msg": "yes, but this chair is made of iron.",
+        "num": 2,
+        "part": "B"
+    },
+    {
+        "lang": "English",
+        "msg": "can you help me after school?",
+        "num": 3,
+        "part": "A"
+    },
+    {
+        "lang": "English",
+        "msg": "Of course, but I must hand in this homework before that.",
+        "num": 3,
+        "part": "B"
+    }
+]

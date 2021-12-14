@@ -1,23 +1,23 @@
 [
     {
-        "command": "speak",
         "lang": "English",
-        "msg": "he plays baseball very well."
+        "msg": "He plays baseball very well.",
+        "key": "seems"
     },
     
-    {
-        "command": "speak", 
+    { 
         "lang": "English",
-        "msg": "I saw him at the park near the station yesterday."
+        "msg": "I saw him at the park near the station yesterday.",
+        "key": "said"
     },
     {
-        "command": "speak",
         "lang": "English",
-        "msg": "yes, but this chair is made of iron."
+        "msg": "Is this table made of wood?",
+        "key": "made"
     },
     {
-        "command": "speak",
         "lang": "English",
-        "msg": "can you help me after school?"
+        "msg": "Can you help me after school?",
+        "key": "must"
     }
 ]
