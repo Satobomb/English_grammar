@@ -1,113 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
+
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="./css/index.css" rel="stylesheet">
     <script src="libqi-js/libs/qimessaging/1.0/qimessaging.js"></script>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
     <title>英文法適応支援</title>
-    
-    <input type="button" class="btn" value="英文法確認のインタラクション" onclick="moveScreen(1)" />
-    <input type="button" class="btn" value="インタラクション" onclick="moveScreen(2)" />
-    <input type="button" class="btn" value="インタラクション２回目" onclick="moveScreen(3)" />
-    
+
+    <input type="button" class="btn" value="英文法確認のインタラクション" onclick="start('first')" />
+    <input type="button" class="btn" value="インタラクション" onclick="start('second')" />
+    <input type="button" class="btn" value="インタラクション２回目" onclick="start('third')" />
+
 </head>
 <body>
-    <p>
-        <div id="allText1">
-            <div id="text1" class="text">
-                A: 彼は野球が上手だよ。<p>
-                A: He plays baseball very well.<p>
-                B: すごいね、彼は勉強も得意らしいよ。<p>
-                B: Wow, he (　　　) to be good at studying too.    
-            </div>
-            <div id="text2" class="text">
-                A: 僕は昨日、駅近くの公園で彼を見かけたよ。<p>
-                A: I saw him at the park near the station yesterday.<p>
-                B: 本当？彼はさっき、直接家に帰ったって言ってたわよ。<p>
-                B: Really? He (　　　) that he went home directly just now.
-
-            </div>
-            <div id="text3" class="text">
-                A: このテーブルは木でできているの？<p>
-                A: Is this table made of wood?<p>
-                B: そうだよ、だけどこの椅子は鉄でできているんだ。<p>
-                B: Yes, but this chair is (　　　) of iron.
-            </div>
-            <div id="text4" class="text">
-                A: 学校が終わったら、手を貸してもらってもいいかな？<p>
-                A: Can you help me after school?<p>
-                B: もちろん、ただその前にこの宿題を出しに行かないと。<p>
-                B: Of course, but I (　　　) hand in this homework before that.
-            </div>
-        </div>
-        <div id="allText2">
-            <div id="text1" class="text">
-                ロボットが喋る内容は文法確認のインタラクションによって変わる<p>
-                A: 彼は野球が上手だよ。<p>
-                A: He plays baseball very well.<p>
-                B: すごいね、彼は勉強も得意らしいよ。<p>
-                B: Wow, he (　　　) to be good at studying too.    
-            </div>
-            <div id="text2" class="text">
-                A: 僕は昨日、駅近くの公園で彼を見かけたよ。<p>
-                A: I saw him at the park near the station yesterday.<p>
-                B: 本当？彼はさっき、直接家に帰ったって言ってたわよ。<p>
-                B: Really? He (　　　) that he went home directly just now.
-
-            </div>
-            <div id="text3" class="text">
-                A: このテーブルは木でできているの？<p>
-                A: Is this table (　　　) of wood?<p>
-                B: そうだよ、だけどこの椅子は鉄でできているんだ。<p>
-                B: Yes, but this chair is made of iron.
-            </div>
-            <div id="text4" class="text">
-                A: 学校が終わったら、手を貸してもらってもいいかな？<p>
-                A: Can you help me after school?<p>
-                B: もちろん、ただその前にこの宿題を出しに行かないと。<p>
-                B: Of couse, but I (　　　) hand in this homework before that.
-            </div>
-        </div>
-        <div id="allText3">
-            <div id="text1" class="text">
-                ロボットが喋る内容はインタラクションによって変わる<p>
-                A: 彼は野球が上手だよ。<p>
-                A: He plays baseball very well.<p>
-                B: すごいね、彼は勉強も得意らしいよ。<p>
-                B: Wow, he (　　　) to be good at studying too.    
-            </div>
-            <div id="text2" class="text">
-                A: 僕は昨日、駅近くの公園で彼を見かけたよ。<p>
-                A: I saw him at the park near the station yesterday.<p>
-                B: 本当？彼はさっき、直接家に帰ったって言ってたわよ。<p>
-                B: Really? He (　　　) that he went home directly just now.
-            </div>
-            <div id="text3" class="text">
-                A: このテーブルは木でできているの？<p>
-                A: Is this table (　　　) of wood?<p>
-                B: そうだよ、だけどこの椅子は鉄でできているんだ。<p>
-                B: Yes, but this chair is made of iron.
-            </div>
-            <div id="text4" class="text">
-                A: 学校が終わったら、手を貸してもらってもいいかな？<p>
-                A: Can you help me after school?<p>
-                B: もちろん、ただその前にこの宿題を出しに行かないと。<p>
-                B: Of couse, but I (　　　) hand in this homework before that.
-            </div>
-        </div>
-    </p>
-
-    <input type="button" value="戻る" onclick="clickBtnBack()" />
-    <input type="button" value="次へ" onclick="clickBtnNext()" />
-    <input type="button" value="間違い" onclick="graspMistake()" />
+    <div id="scripts">
+        <h2>会話文表示</h2>
+    </div>
     <input type="button" value="音声認識開始" onclick="voiceRecSt()" />
-    <input type="button" value="話す" onclick="speak()" />
     <script type="text/javascript" src="./js/index.js"></script>
-    
 </body>
 </html>
