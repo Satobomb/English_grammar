@@ -1,74 +1,31 @@
-var page = 1;
-var allText = document.getElementById('allText1').getElementsByTagName('div');
 var _tts;
 var _lang;
-var miss_arr = []; //[0]は使わない ３単元、過去形、受動態、助動詞
-var arr_len = 4;
-//サーバと接続(connect)する
 var socket = io.connect();
-
-
-for(var i = 0;i<=arr_len;i++) miss_arr[i] = 0; //0が正解、１が不正解
-
-function graspMistake(){
-    //console.log(page);
-    miss_arr[page] = 1;
-    for(var i = 1;i<miss_arr.length;i++){ //miss_arr.lengthも大きさは５
-        console.log(miss_arr[i]);
-    }
-}
-function clickBtnNext(){     //ページを進める
-    if(page >= allText.length) return;
-    for(var i=1; i<allText.length; i++) {
-        if(i == page){
-            allText[i-1].style.display = "none";
-            allText[i].style.display = "block";
-        }
-    }
-    page++;
-}
-function clickBtnBack(){    //ページを戻す
-    if(page <= 1) return;
-    for(var i=2; i<=allText.length; i++) {
-        if(i == page){
-            allText[i-1].style.display = "none";
-            allText[i-2].style.display = "block";
-        }
-    }
-    page--;
-}
-function moveScreen(screenNum){
-    allText[page-1].style.display = "none";
-    //console.log(screenNum);
-    switch (screenNum){
-        case 1:
-            allText = document.getElementById('allText1').getElementsByTagName('div');            
-            break;
-        case 2:
-            allText = document.getElementById('allText2').getElementsByTagName('div');
-            break;
-        case 3:
-            allText = document.getElementById('allText3').getElementsByTagName('div');
-            break;
-    }
-    allText[0].style.display = "block"; //画面を変更したうえで1ページ目を表示
-    page = 1; //ページ変数を初期化
-}
-
-function speak(){
-    socket.emit("SPEAKING_TO_SERVER");
-}
-
-function voiceRecSt(){
-    socket.emit("VOICE_REC");
-}
-
-allText[0].style.display = "block"; //1ページ目を表示
 
 socket.on("SPEAKING_TO_CLIENT", (lang, msg) => {
     speech(lang, msg);
 });
+socket.on("DISPLAY_TO_CLIENT", (text) => {
+    $('#scripts').html('');
+    $('#scripts').html(text);
+});
 
+function start(mode){
+    switch (mode){
+        case "first":
+            socket.emit("SPEAKING_TO_SERVER");
+            break;
+        case "second":
+            socket.emit("SPEAKING_TO_SERVER2");
+            break;
+        // case "third":
+        //     socket.emit("SPEAKING_TO_SERVER3");
+        //     break;
+    }
+}
+function voiceRecSt(){
+    socket.emit("VOICE_REC");
+}
 
 //↓Naoを動かす用
 
