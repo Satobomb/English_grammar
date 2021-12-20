@@ -4,55 +4,71 @@
         "msg": "he plays baseball very well.",
         "num": 0,
         "part": "A",
-        "txt": "A: 彼は野球が上手だよ。<br> A: He plays baseball very well. <br> B: すごいね、彼は勉強も得意らしいよ。 <br> B: Wow, he (    ) to be good at studying too."
+        "key": "seems",
+        "txt": "A: 彼は野球が上手だよ。<br> A: He plays baseball very well. <br> B: すごいね、彼は勉強も得意らしいよ。 <br> B: Wow, he (    ) to be good at studying too.",
+        "correctText": "Wow, he seems to be good at studying too."
     },
     {
         "lang": "English",
         "msg": "wow, he seem to be good at studing too.",
         "num": 0,
         "part": "B",
-        "txt": ""
+        "key": "",
+        "txt": "",
+        "correctText": ""
     },
     {
         "lang": "English",
         "msg": "I saw him at the park near the station yesterday.",
         "num": 1,
         "part": "A",
-        "txt": "A: 僕は昨日、駅近くの公園で彼を見かけたよ。 <br> A: I saw him at the park near the station yesterday. <br> B: 本当？彼はさっき、直接家に帰ったって言ってたわよ。 <br> B: Really? He (    ) that he went home directly just now."
+        "key": "said",
+        "txt": "A: 僕は昨日、駅近くの公園で彼を見かけたよ。 <br> A: I saw him at the park near the station yesterday. <br> B: 本当？彼はさっき、直接家に帰ったって言ってたわよ。 <br> B: Really? He (    ) that he went home directly just now.",
+        "correctText": "Really? He said that he went home directly just now."
     },
     {
         "lang": "English",
         "msg": "really? he says that he went home directly just now.",
         "num": 1,
         "part": "B",
-        "txt": ""
+        "key": "",
+        "txt": "",
+        "correctText": ""
     },
     {
         "lang": "English",
         "msg": "is this table made of wood?",
         "num": 2,
         "part": "A",
-        "txt": "A: このテーブルは木でできているの？ <br> A: Is this table made of wood? <br> B: そうだよ、だけどこの椅子は鉄でできているんだ。 <br> B: Yes, but this chair is (    ) of iron."
+        "key": "made",
+        "txt": "A: このテーブルは木でできているの？ <br> A: Is this table made of wood? <br> B: そうだよ、だけどこの椅子は鉄でできているんだ。 <br> B: Yes, but this chair is (    ) of iron.",
+        "correctText": "Yes, but this chair is made of iron."
     },
     {
         "lang": "English",
         "msg": "yes, but this chair is make of iron.",
         "num": 2,
         "part": "B",
-        "txt": ""
+        "key": "",
+        "txt": "",
+        "correctText": ""
     },
     {
         "lang": "English",
         "msg": "can you help me after school?",
         "num": 3,
         "part": "A",
-        "txt": "A: 学校が終わったら、手を貸してもらってもいいかな？ <br> A: Can you help me after school? <br> B: もちろん、ただその前にこの宿題を出しに行かないと。 <br> B: Of course, but I (    ) hand in this homework before that."
+        "key": "must",
+        "txt": "A: 学校が終わったら、手を貸してもらってもいいかな？ <br> A: Can you help me after school? <br> B: もちろん、ただその前にこの宿題を出しに行かないと。 <br> B: Of course, but I (    ) hand in this homework before that.",
+        "correctText": "Of course, but I must hand in this homework before that."
     },
     {
         "lang": "English",
         "msg": "Of course, but I may hand in this homework before that.",
         "num": 3,
         "part": "B",
-        "txt": ""
+        "key": "",
+        "txt": "",
+        "correctText": ""
     }
 ]
