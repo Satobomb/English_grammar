@@ -213,6 +213,7 @@ async function secondInteraction(){
       //speakScript("Japanese", "間違えて話していたかな？");
       //await voiceRec();
       //speakScript("Japanese", "なるほどね、ありがとう！");
+      //正解を表示する(4パターン全てを兼ねて)
     }else if(miss_arr[count] == 0 && obj.part == "A"){
       await speakScript(obj.lang, obj.msg);
       await voiceRec();

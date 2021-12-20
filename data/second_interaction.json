@@ -36,7 +36,7 @@
     },
     {
         "lang": "English",
-        "msg": "yes, but this chair is made of iron.",
+        "msg": "yes, but this chair is make of iron.",
         "num": 2,
         "part": "B",
         "txt": ""
@@ -50,7 +50,7 @@
     },
     {
         "lang": "English",
-        "msg": "Of course, but I must hand in this homework before that.",
+        "msg": "Of course, but I may hand in this homework before that.",
         "num": 3,
         "part": "B",
         "txt": ""
