@@ -6,7 +6,7 @@
         "part": "A",
         "key": "seems",
         "txt": "A: 彼は野球が上手だよ。<br> A: He plays baseball very well. <br> B: すごいね、彼は勉強も得意らしいよ。 <br> B: Wow, he (    ) to be good at studying too.",
-        "correctText": "Wow, he seems to be good at studying too."
+        "correctText": "wow, he seems to be good at studying too."
     },
     {
         "lang": "English",

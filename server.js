@@ -98,14 +98,17 @@ const recognizeSync = (lc) => {
 var io = socketio(server);
 
 io.sockets.on('connection', function (socket) {
-  socket.on('VOICE_REC', () => {
-    voiceRec();
-  });
+  // socket.on('VOICE_REC', () => {
+  //   voiceRec();
+  // });
   socket.on('SPEAKING_TO_SERVER', () => {
     startSpeaking("first");
   });
   socket.on('SPEAKING_TO_SERVER2', () => {
     startSpeaking("second");
+  });
+  socket.on('SPEAKING_TO_SERVER3', () => {
+    startSpeaking("third");
   });
   socket.on('SPOKE', () => {
     syncFlag = true;
@@ -126,8 +129,6 @@ io.sockets.on('connection', function (socket) {
 	async function voiceRec(){
 		const result = await recognizeSync('en-US');
 		if (result != null) {
-			//console.log(`result : ${result}`);
-      //console.log(`${result}\n`);
       return result;
 		} else {
 			console.log(`bad recognize, one more time.`);
@@ -139,7 +140,6 @@ async function startSpeaking(mode){
     case "first":
       //await doJsonCommands("./data/script.json");
       await firstInteraction();
-      //await secondInteraction();
       break;
     case "second":
       await secondInteraction();
@@ -153,13 +153,7 @@ async function startSpeaking(mode){
 async function doJsonCommands(jsonPath){
   const jsonObject = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
   for (const obj of jsonObject) {
-    switch (obj.command) {
-      case "speak": 
         await speakScript(obj.lang, obj.msg);
-        break;
-      default: 
-        console.log("undefined command : " + obj.command);
-    }
   }
 }
 function speakScript(lang, msg) {
