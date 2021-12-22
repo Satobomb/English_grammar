@@ -1,17 +1,14 @@
 [
     {
-        "command": "speak",
         "lang": "Japanese",
         "msg": "英語のインタラクションを始めるよ"
     },
     
     {
-        "command": "speak", 
         "lang": "Japanese",
         "msg": "僕と一緒に頑張ろうね"
     },
     {
-        "command": "speak",
         "lang": "Japanese",
         "msg": "それじゃあ、始めるよ"
     }

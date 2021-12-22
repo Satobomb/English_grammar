@@ -98,14 +98,17 @@ const recognizeSync = (lc) => {
 var io = socketio(server);
 
 io.sockets.on('connection', function (socket) {
-  socket.on('VOICE_REC', () => {
-    voiceRec();
-  });
+  // socket.on('VOICE_REC', () => {
+  //   voiceRec();
+  // });
   socket.on('SPEAKING_TO_SERVER', () => {
     startSpeaking("first");
   });
   socket.on('SPEAKING_TO_SERVER2', () => {
     startSpeaking("second");
+  });
+  socket.on('SPEAKING_TO_SERVER3', () => {
+    startSpeaking("third");
   });
   socket.on('SPOKE', () => {
     syncFlag = true;
@@ -125,13 +128,8 @@ io.sockets.on('connection', function (socket) {
 
 	async function voiceRec(){
 		const result = await recognizeSync('en-US');
-		if (result != null) {
-			//console.log(`result : ${result}`);
-      //console.log(`${result}\n`);
-      return result;
-		} else {
-			console.log(`bad recognize, one more time.`);
-		}
+		if   (result != null) return result;
+		else console.log(`bad recognize, one more time.`);
 	}
 
 async function startSpeaking(mode){
@@ -139,7 +137,6 @@ async function startSpeaking(mode){
     case "first":
       //await doJsonCommands("./data/script.json");
       await firstInteraction();
-      //await secondInteraction();
       break;
     case "second":
       await secondInteraction();
@@ -152,15 +149,7 @@ async function startSpeaking(mode){
 
 async function doJsonCommands(jsonPath){
   const jsonObject = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
-  for (const obj of jsonObject) {
-    switch (obj.command) {
-      case "speak": 
-        await speakScript(obj.lang, obj.msg);
-        break;
-      default: 
-        console.log("undefined command : " + obj.command);
-    }
-  }
+  for (const obj of jsonObject) await speakScript(obj.lang, obj.msg);
 }
 function speakScript(lang, msg) {
   console.log(msg);
@@ -180,15 +169,21 @@ async function firstInteraction(){
   let count = 0;
   for (const obj of jsonObject) { 
     io.emit("DISPLAY_TO_CLIENT", obj.txt);
-    await speakScript(obj.lang, obj.msg);
-    const result = await voiceRec();
-    const words = result.split(" ");
-    for(const data of words){
-      //console.log(data);
-      //console.log(obj.key);
-      if(data === obj.key)
-        miss_arr[count] = 1;
-    }
+    //if(obj.exception == "no"){
+      await speakScript(obj.lang, obj.msg);
+      const result = await voiceRec();
+      const words = result.split(" ");
+      for(const data of words){
+        if(data === obj.key) miss_arr[count] = 1;
+      }
+    // }else if(obj.exception == "yes"){
+    //   const result = await voiceRec();
+    //   const words = result.split(" ");
+    //   for(const data of words){
+    //     if(data === obj.key) miss_arr[count] = 1;
+    //   }
+    //   await speakScript(obj.lang, obj.msg);
+    // }
     count++;
     console.log(miss_arr);
   }
@@ -198,6 +193,7 @@ async function secondInteraction(){
   //await speakScript("Japanese", "２回目のインタラクションを始めるよ。");
   const jsonObject = JSON.parse(fs.readFileSync("./data/second_interaction.json", "utf-8"));
   let count = 0;
+  let correctFlag = 0;
   miss_arr = [0,1,0,1];
   console.log(miss_arr);
   for (const obj of jsonObject) {
@@ -216,15 +212,20 @@ async function secondInteraction(){
       //正解を表示する(4パターン全てを兼ねて)
     }else if(miss_arr[count] == 0 && obj.part == "A"){
       await speakScript(obj.lang, obj.msg);
-      await voiceRec();
-      count++;
-      //比較する
-      //if(間違っていたら)
-      //speakScript("Japanese", "間違えて発話していたよ。");
-      //speakScript("Japanese", "正しい発話はこんな感じだよ。");
-      //正解の発話をする
-      //else(合っていたら)
-      //speakScript("Japanese", "良くできていたね。この調子で頑張ろう。");
+      const result = await voiceRec();
+      const words = result.split(" ");
+      for(const data of words){
+        if(data === obj.key) correctFlag = 1;
+      }
+      if(correctFlag == 0){
+        await speakScript("Japanese", "間違えて発話していたよ。");
+        await speakScript("Japanese", "正しい発話はこんな感じだよ。");
+        await speakScript(obj.lang, obj.correctText);
+      }else if(correctFlag == 1){
+        await speakScript("Japanese", "良くできていたね。この調子で頑張ろう。");
+        correctFlag = 0;
+      }
+        count++;
     }
   }
   //console.log("finish");
