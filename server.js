@@ -128,11 +128,8 @@ io.sockets.on('connection', function (socket) {
 
 	async function voiceRec(){
 		const result = await recognizeSync('en-US');
-		if (result != null) {
-      return result;
-		} else {
-			console.log(`bad recognize, one more time.`);
-		}
+		if   (result != null) return result;
+		else console.log(`bad recognize, one more time.`);
 	}
 
 async function startSpeaking(mode){
@@ -152,9 +149,7 @@ async function startSpeaking(mode){
 
 async function doJsonCommands(jsonPath){
   const jsonObject = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
-  for (const obj of jsonObject) {
-        await speakScript(obj.lang, obj.msg);
-  }
+  for (const obj of jsonObject) await speakScript(obj.lang, obj.msg);
 }
 function speakScript(lang, msg) {
   console.log(msg);
@@ -228,7 +223,7 @@ async function secondInteraction(){
         await speakScript(obj.lang, obj.correctText);
       }else if(correctFlag == 1){
         await speakScript("Japanese", "良くできていたね。この調子で頑張ろう。");
-        correctFlag == 0;
+        correctFlag = 0;
       }
         count++;
     }
