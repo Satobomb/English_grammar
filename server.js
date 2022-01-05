@@ -6,6 +6,7 @@ let syncFlag = false;
 let miss_arr = [];
 let miss_arr2 = [];
 let arr_len = 4;
+const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
 
 for(let i = 0;i<arr_len;i++){
   miss_arr[i] = 0; //1が正解、0が不正解
@@ -173,21 +174,21 @@ async function firstInteraction(){
   let count = 0;
   for (const obj of jsonObject) { 
     io.emit("DISPLAY_TO_CLIENT", obj.txt);
-    //if(obj.ex == 0){
+    if(obj.ex == 0){
       await speakScript(obj.lang, obj.msg);
       const result = await voiceRec('en-US');
       const words = result.split(" ");
       for(const data of words){
         if(data === obj.key) miss_arr[count] = 1;
       }
-    // }else if(obj.ex == 1){
-    //   const result = await voiceRec('en-US');
-    //   const words = result.split(" ");
-    //   for(const data of words){
-    //     if(data === obj.key) miss_arr[count] = 1;
-    //   }
-    //   await speakScript(obj.lang, obj.msg);
-    // }
+    }else if(obj.ex == 1){
+      const result = await voiceRec('en-US');
+      const words = result.split(" ");
+      for(const data of words){
+        if(data === obj.key) miss_arr[count] = 1;
+      }
+      await speakScript(obj.lang, obj.msg);
+    }
     count++;
     console.log(miss_arr);
   }
@@ -198,7 +199,7 @@ async function secondInteraction(){
   const jsonObject = JSON.parse(fs.readFileSync("./data/second_interaction.json", "utf-8"));
   let count = 0;
   let correctFlag = 0;
-  miss_arr = [0,1,1,1];
+  miss_arr = [0,1,0,1];
   console.log(miss_arr);
   for (const obj of jsonObject) {
     if(count != obj.num) {
@@ -214,13 +215,16 @@ async function secondInteraction(){
       const response = await voiceRec('ja-JP');
       if(response == "ある"){
         await speakScript("Japanese", "どういう間違いをしていたかな？");
-        const teachingContent = await voiceRec('ja-JP');
+        await voiceRec('ja-JP');
         await speakScript("Japanese", "正しい単語を教えてほしいな。");
-        const teachingWord = await voiceRec('en-US');
+        await voiceRec('en-US');
         await speakScript("Japanese", "なるほどね、ありがとう!");
       }else{
         await speakScript("Japanese", "なかったんだね、わかったよ。");
       }
+      io.emit("DISPLAY_ANSWER", obj.correctText);
+      await sleep(5000);
+      io.emit("DISPLAY_ANSWER_BLANK");
     }else if(miss_arr[count] == 0 && obj.part == "A" && obj.ex == 0){
       await speakScript(obj.lang, obj.msg);
       const result = await voiceRec('en-US');
@@ -238,7 +242,6 @@ async function secondInteraction(){
       }
         count++;
     }else if(miss_arr[count] == 1 && obj.part == "A" && obj.ex == 1){
-      console.log("a");
       await speakScript(obj.lang, obj.msg);
       await voiceRec('en-US');
       count++;
@@ -246,15 +249,17 @@ async function secondInteraction(){
       const response = await voiceRec('ja-JP');
       if(response == "ある"){
         await speakScript("Japanese", "どういう間違いをしていたかな？");
-        const teachingContent = await voiceRec('ja-JP');
+        await voiceRec('ja-JP');
         await speakScript("Japanese", "正しい単語を教えてほしいな。");
-        const teachingWord = await voiceRec('en-US');
+        await voiceRec('en-US');
         await speakScript("Japanese", "なるほどね、ありがとう!");
       }else{
         await speakScript("Japanese", "なかったんだね、わかったよ。");
       }
+      io.emit("DISPLAY_ANSWER", obj.correctText);
+      await sleep(5000);
+      io.emit("DISPLAY_ANSWER_BLANK");
     }else if(miss_arr[count] == 0 && obj.part == "B" && obj.ex == 1){
-      console.log("b");
       const result = await voiceRec('en-US');
       await speakScript(obj.lang, obj.msg);
       const words = result.split(" ");
@@ -271,10 +276,17 @@ async function secondInteraction(){
       }
         count++;
     }
-    //正解文を表示する
   }
-  //console.log("finish");
 }
 async function thirdInteraction(){
-  
+  //await speakScript("Japanese", "最後のインタラクションを始めるよ。");
+  const jsonObject = JSON.parse(fs.readFileSync("./data/third_interaction.json", "utf-8"));
+  let count = 0;
+  let correctFlag = 0;
+  miss_arr = [0,1,0,1];
+  miss_arr2 = [1,0,0,1];
+  console.log(miss_arr);
+  for (const obj of jsonObject) {
+    //基本的には教えるだけ
+  }
 }

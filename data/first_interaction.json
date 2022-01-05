@@ -16,9 +16,9 @@
     },
     {
         "lang": "English",
-        "msg": "Is this table made of wood?",
+        "msg": "Yes, but this chair is made of iron.",
         "key": "made",
-        "txt": "A: このテーブルは木でできているの？ <br> A: Is this table made of wood? <br> B: そうだよ、だけどこの椅子は鉄でできているんだ。 <br> B: Yes, but this chair is (　　　) of iron.",
+        "txt": "A: このテーブルは木でできているの？ <br> A: Is this table (　　　) of wood? <br> B: そうだよ、だけどこの椅子は鉄でできているんだ。 <br> B: Yes, but this chair is made of iron.",
         "ex": 1
     },
     {
