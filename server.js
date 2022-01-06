@@ -386,4 +386,4 @@ async function thirdInteraction(){
     console.log(miss_arr3); //for debug
     count++;
   }
-}
+} 
