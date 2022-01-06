@@ -1,18 +1,18 @@
-let socketio = require('socket.io');
-let http = require("http");
-let fs = require("fs");
-let server = http.createServer();
+const socketio = require('socket.io');
+const http = require("http");
+const fs = require("fs");
+const server = http.createServer();
+const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+const arr_len = 4;
 let syncFlag = false;
 let miss_arr = [];
 let miss_arr2 = [];
 let miss_arr3 = [];
-let arr_len = 4;
-const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
 
 for(let i = 0;i<arr_len;i++){
   miss_arr[i] = 0; //1が正解、0が不正解
   miss_arr2[i] = 0;
-  miss_arr3[i] = 1;
+  miss_arr3[i] = 0;
 } 
 
 server.on("request", getJs);
@@ -334,13 +334,15 @@ async function thirdInteraction(){
   //await speakScript("Japanese", "最後のインタラクションを始めるよ。");
   const jsonObject = JSON.parse(fs.readFileSync("./data/third_interaction.json", "utf-8"));
   let count = 0;
-  //let correctFlag = 0;
+  let correctFlag = 0;
   miss_arr = [0,1,0,1]; //for debug
   miss_arr2 = [1,0,0,1]; //for debug
   console.log(miss_arr); //for debug
+  console.log(miss_arr2); //for debug
   for (const obj of jsonObject) {
     if(miss_arr[count] == 1 && miss_arr2[count] == 1){
       count++;
+      miss_arr3[count] = 1;
       continue;
     }
     io.emit("DISPLAY_TO_CLIENT", obj.txt);
@@ -351,22 +353,37 @@ async function thirdInteraction(){
       await speakScript(obj.lang, obj.msg);
       await voiceRec('en-US');
     }
-    await speakScript("Japanese", "僕が話した文は間違えていたかな？間違えがあったらある、なかったらないって言ってね。");
+    //await speakScript("Japanese", "僕が話した文は間違えていたかな？間違えがあったらある、なかったらないって言ってね。");
+    await speakScript("Japanese", "僕が話した文は間違えていたかな？"); //for debug
     const response = await voiceRec('ja-JP');
     if(response == "ある"){
       await speakScript("Japanese", "どういう間違いをしていたかな？");
       await voiceRec('ja-JP');
-      await speakScript("Japanese", "正しい単語を教えてほしいな。");
-      await voiceRec('en-US');
+      await speakScript("Japanese", "正しい発話を教えてほしいな。");
+      const result = await voiceRec('en-US');
       await speakScript("Japanese", "なるほどね、ありがとう!");
+      const words = result.split(" ");
+      for(const data of words){
+        if(data === obj.key) correctFlag = 1;
+      }
+      if(correctFlag == 1){
+        miss_arr3[count] = 1;
+      }else if(correctFlag == 0){
+        io.emit("DISPLAY_ANSWER", obj.correctText);
+        await sleep(5000);
+        io.emit("DISPLAY_ANSWER_BLANK");
+      }
     }else{
       await speakScript("Japanese", "なかったんだね、わかったよ。");
+      if(obj.correct == 1){
+        miss_arr3[count] = 1;
+      }else if(obj.correct == 0){
+        io.emit("DISPLAY_ANSWER", obj.correctText);
+        await sleep(5000);
+        io.emit("DISPLAY_ANSWER_BLANK");
+      }
     }
-    miss_arr3[count] = 1;
-    console.log(miss_arr3);
-    // io.emit("DISPLAY_ANSWER", obj.correctText);
-    // await sleep(5000);
-    // io.emit("DISPLAY_ANSWER_BLANK");
+    console.log(miss_arr3); //for debug
     count++;
   }
 }
