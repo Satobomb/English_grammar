@@ -11,6 +11,14 @@ socket.on("DISPLAY_TO_CLIENT", (text) => {
     $('#scripts').html('');
     $('#scripts').html(text);
 });
+socket.on("DISPLAY_ANSWER", (text) => {
+    $('#answer').html('');
+    $('#answer').html(text);
+});
+socket.on("DISPLAY_ANSWER_BLANK", () => {
+    $('#answer').html('');
+});
+
 
 function start(mode){
     switch (mode){
@@ -31,7 +39,7 @@ function start(mode){
 
 //↓Naoを動かす用
 
-var session = new QiSession("192.168.1.14:80");
+var session = new QiSession("192.168.1.9:80");
     session.socket().on('connect', function () {
         console.log('QiSession connected!');
         // now you can start using your QiSession
