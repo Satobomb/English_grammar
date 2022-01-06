@@ -50,7 +50,7 @@ var session = new QiSession("192.168.1.9:80");
 session.service("ALTextToSpeech").done((tts) => {
     _tts = tts;   
     _tts.getLanguage().done(function (lang) { //言語の取得
-        console.log("language is " + lang + " now");
+        //console.log("language is " + lang + " now");
         _lang = lang;
     }).fail(function (error) {
         console.log("An error occurred: " + error);
