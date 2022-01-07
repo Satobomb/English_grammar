@@ -12,12 +12,12 @@
     },
     {
         "lang": "English",
-        "msg": "Wow, he seem to be good at studing too.",
+        "msg": "Wow, he seem to be good at studying too.",
         "num": 0,
         "part": "B",
         "key": "seems",
         "txt": "",
-        "correctText": "Wow, he seems to be good at studing too.",
+        "correctText": "Wow, he seems to be good at studying too.",
         "correct": 0,
         "ex": 0
     },
