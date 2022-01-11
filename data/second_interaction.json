@@ -7,16 +7,18 @@
         "key": "seems",
         "txt": "A: 彼は野球が上手だよ。<br> A: He plays baseball very well. <br> B: すごいね、彼は勉強も得意らしいよ。 <br> B: Wow, he (　　　) to be good at studying too.",
         "correctText": "Wow, he seems to be good at studying too.",
+        "correct": 0,
         "ex": 0
     },
     {
         "lang": "English",
-        "msg": "Wow, he seem to be good at studing too.",
+        "msg": "Wow, he seem to be good at studying too.",
         "num": 0,
         "part": "B",
-        "key": "",
+        "key": "seems",
         "txt": "",
-        "correctText": "Wow, he seems to be good at studing too.",
+        "correctText": "Wow, he (seems) to be good at studying too.",
+        "correct": 0,
         "ex": 0
     },
     {
@@ -27,16 +29,18 @@
         "key": "said",
         "txt": "A: 僕は昨日、駅近くの公園で彼を見かけたよ。 <br> A: I saw him at the park near the station yesterday. <br> B: 本当？彼はさっき、直接家に帰ったって言ってたわよ。 <br> B: Really? He (　　　) that he went home directly just now.",
         "correctText": "Really? He said that he went home directly just now.",
+        "correct": 1,
         "ex": 0
     },
     {
         "lang": "English",
-        "msg": "Really? he says that he went home directly just now.",
+        "msg": "Really? He said that he went home directly just now.",
         "num": 1,
         "part": "B",
-        "key": "",
+        "key": "said",
         "txt": "",
-        "correctText": "Really? he said that he went home directly just now.",
+        "correctText": "Really? He (said) that he went home directly just now.",
+        "correct": 1,
         "ex": 0
     },
     {
@@ -44,9 +48,10 @@
         "msg": "Is this table make of wood?",
         "num": 2,
         "part": "A",
-        "key": "",
+        "key": "made",
         "txt": "A: このテーブルは木でできているの？ <br> A: Is this table (　　　) of wood? <br> B: そうだよ、だけどこの椅子は鉄でできているんだ。 <br> B: Yes, but this chair is made of iron.",
-        "correctText": "Is this table made of wood?",
+        "correctText": "Is this table (made) of wood?",
+        "correct": 0,
         "ex": 1
     },
     {
@@ -57,6 +62,7 @@
         "key": "made",
         "txt": "",
         "correctText": "Is this table made of wood?",
+        "correct": 0,
         "ex": 1
     },
     {
@@ -67,6 +73,7 @@
         "key": "must",
         "txt": "A: 学校が終わったら、手を貸してもらってもいいかな？ <br> A: Can you help me after school? <br> B: もちろん、ただその前にこの宿題を出しに行かないと。 <br> B: Of course, but I (　　　) hand in this homework before that.",
         "correctText": "Of course, but I must hand in this homework before that.",
+        "correct": 0,
         "ex": 0
     },
     {
@@ -74,9 +81,10 @@
         "msg": "Of course, but I may hand in this homework before that.",
         "num": 3,
         "part": "B",
-        "key": "",
+        "key": "must",
         "txt": "",
-        "correctText": "Of course, but I must hand in this homework before that.",
+        "correctText": "Of course, but I (must) hand in this homework before that.",
+        "correct": 0,
         "ex": 0
     }
 ]
