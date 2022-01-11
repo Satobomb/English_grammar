@@ -8,9 +8,6 @@ var socket = io.connect();
 socket.on("SPEAKING_TO_CLIENT", (lang, msg) => {
     speech(lang, msg);
 });
-socket.on("SPEAKING_TO_CLIENT2", (lang, msg) => {
-    speech2(lang, msg);
-});
 socket.on("DISPLAY_TO_CLIENT", (text) => {
     $('#scripts').html('');
     $('#scripts').html(text);
@@ -35,6 +32,9 @@ function start(mode){
         case "third":
             socket.emit("SPEAKING_TO_SERVER3");
             break;
+        case "test":
+            socket.emit("SPEAKING_TO_SERVER4");
+        break;
     }
 }
 // function voiceRecSt(){

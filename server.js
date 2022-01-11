@@ -8,6 +8,7 @@ let syncFlag = false;
 let miss_arr = [];
 let miss_arr2 = [];
 let miss_arr3 = [];
+let miss_arr4 = [];
 // const strComparer = require('./modules/string-comparer');
 // const metaphone = require('metaphone');
 // /* kuroshiro : Japanese Sentence => Hiragana, Katakana or Romaji */
@@ -20,6 +21,11 @@ for(let i = 0;i < arr_len; i++){
   miss_arr[i] = 0; //1が正解、0が不正解
   miss_arr2[i] = 0;
   miss_arr3[i] = 0;
+  for(let j = 0;j < arr_len; j = j+3){
+    miss_arr4[j] = 0;
+    miss_arr4[j+1] = 0;
+    miss_arr4[j+2] = 0;
+  }
 } 
 
 server.on("request", getJs);
@@ -122,6 +128,9 @@ io.sockets.on('connection', function (socket) {
   socket.on('SPEAKING_TO_SERVER3', () => {
     startSpeaking("third");
   });
+  socket.on('SPEAKING_TO_SERVER4', () => {
+    startSpeaking("test");
+  });
   socket.on('SPOKE', () => {
     syncFlag = true;
   });
@@ -148,6 +157,9 @@ async function startSpeaking(mode){
       break;
     case "third":
       await thirdInteraction();
+      break;
+    case "test":
+      await test();
       break;
   }
 }
@@ -317,3 +329,34 @@ async function thirdInteraction(){
   await speakScript("Japanese", "お疲れさま、これで英文の読みあいは終わりだよ。");
   await speakScript("Japanese", "一緒に話してくれてありがとう！");
 } 
+
+async function test(){
+  await speakScript("Japanese", "これからテストを始めるよ");
+  const jsonObject = JSON.parse(fs.readFileSync("./data/test.json", "utf-8"));
+  io.emit("DISPLAY_ANSWER_BLANK");
+  let count = 0;
+  for (const obj of jsonObject) { 
+    io.emit("DISPLAY_TO_CLIENT", obj.txt);
+    if(count != 0) await speakScript("Japanese", "次の会話文に行くね");
+    await sleep(5000);
+    if(obj.ex == 0){
+      await speakScript(obj.lang, obj.msg);
+      const result = await voiceRec('en-US');
+      const words = result.split(" ");
+      for(const data of words){
+        if(data === obj.key) miss_arr[count] = 1;
+      }
+    }else if(obj.ex == 1){
+      const result = await voiceRec('en-US');
+      const words = result.split(" ");
+      for(const data of words){
+        if(data === obj.key) miss_arr[count] = 1;
+      }
+      await speakScript(obj.lang, obj.msg);
+    }
+    count++;
+    console.log(miss_arr); //for debug
+    await sleep(3000);
+  }
+  speakScript("Japanese", "お疲れさま、最初のインタラクションは終わりだよ。");
+}
