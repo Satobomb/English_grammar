@@ -17,7 +17,7 @@
         "part": "B",
         "key": "seems",
         "txt": "",
-        "correctText": "Wow, he seems to be good at studying too.",
+        "correctText": "Wow, he (seems) to be good at studying too.",
         "correct": 0,
         "ex": 0
     },
@@ -34,12 +34,12 @@
     },
     {
         "lang": "English",
-        "msg": "Really? he said that he went home directly just now.",
+        "msg": "Really? He said that he went home directly just now.",
         "num": 1,
         "part": "B",
         "key": "said",
         "txt": "",
-        "correctText": "Really? he said that he went home directly just now.",
+        "correctText": "Really? He (said) that he went home directly just now.",
         "correct": 1,
         "ex": 0
     },
@@ -50,7 +50,7 @@
         "part": "A",
         "key": "made",
         "txt": "A: このテーブルは木でできているの？ <br> A: Is this table (　　　) of wood? <br> B: そうだよ、だけどこの椅子は鉄でできているんだ。 <br> B: Yes, but this chair is made of iron.",
-        "correctText": "Is this table made of wood?",
+        "correctText": "Is this table (made) of wood?",
         "correct": 0,
         "ex": 1
     },
@@ -83,7 +83,7 @@
         "part": "B",
         "key": "must",
         "txt": "",
-        "correctText": "Of course, but I must hand in this homework before that.",
+        "correctText": "Of course, but I (must) hand in this homework before that.",
         "correct": 0,
         "ex": 0
     }

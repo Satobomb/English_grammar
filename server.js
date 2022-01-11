@@ -9,14 +9,14 @@ let miss_arr = [];
 let miss_arr2 = [];
 let miss_arr3 = [];
 // const strComparer = require('./modules/string-comparer');
-// const metaphone = require("metaphone");
+// const metaphone = require('metaphone');
 // /* kuroshiro : Japanese Sentence => Hiragana, Katakana or Romaji */
 // const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
 // const Kuroshiro = require('kuroshiro');
 // const kuroshiro = new Kuroshiro();
 // kuroshiro.init(new KuromojiAnalyzer());
 
-for(let i = 0;i<arr_len;i++){
+for(let i = 0;i < arr_len; i++){
   miss_arr[i] = 0; //1が正解、0が不正解
   miss_arr2[i] = 0;
   miss_arr3[i] = 0;
@@ -131,13 +131,6 @@ io.sockets.on('connection', function (socket) {
     });
 });
 
-// function setText(){
-//   const jsonItem = JSON.parse(fs.readFileSync("./data/set_text.json", "utf-8"));
-//   for(const item of jsonItem){
-//     io.emit("DISPLAY_TO_CLIENT", item.txt);
-//   }
-// }
-
 async function voiceRec(language){
   const result = await recognizeSync(language);
   if   (result != null) return result;
@@ -147,7 +140,7 @@ async function voiceRec(language){
 async function startSpeaking(mode){
   switch (mode) {
     case "first":
-      await doJsonCommands("./data/script.json");
+      //await doJsonCommands("./data/script.json");
       await firstInteraction();
       break;
     case "second":
@@ -179,11 +172,17 @@ function speakScript(lang, msg) {
 }
 
 async function firstInteraction(){
+  await speakScript("Japanese", "今から英語のインタラクションを始めるよ");
+  await speakScript("Japanese", "このインタラクションでは、空欄になっている文を君に話してもらいたいな");
+  await speakScript("Japanese", "僕と一緒に頑張ろうね");
+  await speakScript("Japanese", "それじゃあ、始めるよ！");
   const jsonObject = JSON.parse(fs.readFileSync("./data/first_interaction.json", "utf-8"));
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
   for (const obj of jsonObject) { 
     io.emit("DISPLAY_TO_CLIENT", obj.txt);
+    if(count != 0) await speakScript("Japanese", "次の会話文に行くね");
+    await sleep(5000);
     if(obj.ex == 0){
       await speakScript(obj.lang, obj.msg);
       const result = await voiceRec('en-US');
@@ -201,19 +200,20 @@ async function firstInteraction(){
     }
     count++;
     console.log(miss_arr); //for debug
+    await sleep(3000);
   }
-  //speakScript("Japanese", "お疲れさま、最初のインタラクションは終わりだよ。");
+  speakScript("Japanese", "お疲れさま、最初のインタラクションは終わりだよ。");
 }
 
 
 async function secondInteraction(){
-  //await speakScript("Japanese", "２回目のインタラクションを始めるよ。");
+  await speakScript("Japanese", "２回目のインタラクションを始めるよ。");
   const jsonObject = JSON.parse(fs.readFileSync("./data/second_interaction.json", "utf-8"));
   let count = 0;
   let correctFlag = 0;
   let correctFlag2 = 0;
   let correctFlag3 = 0;
-  //miss_arr = [0,1,0,1]; //for debug
+  miss_arr = [0,1,0,1]; //for debug
   console.log(miss_arr); //for debug
   for (const obj of jsonObject) {
     if(count != obj.num) continue;
@@ -226,7 +226,7 @@ async function secondInteraction(){
         await speakScript("Japanese", "僕が話した文は間違えていたかな？間違えがあったら、ある、なかったらないって言ってね。");
         //await speakScript("Japanese", "僕が話した文は間違えていたかな？"); //for debug
         const response = await voiceRec('ja-JP');
-        if(response == "ある"){
+        if(response == "ある" || response == "R" || response == "あれ"){
           await speakScript("Japanese", "どういう間違いをしていたかな？");
           await voiceRec('ja-JP');
           await speakScript("Japanese", "正しい発話を教えてほしいな。");
@@ -284,7 +284,7 @@ async function secondInteraction(){
         await speakScript("Japanese", "僕が話した文は間違えていたかな？間違えがあったらある、なかったらないって言ってね。");
         //await speakScript("Japanese", "僕が話した文は間違えていたかな？"); //for debug
         const response = await voiceRec('ja-JP');
-        if(response == "ある"){
+        if(response == "ある" || response == "R" || response == "あれ"){
           await speakScript("Japanese", "どういう間違いをしていたかな？");
           await voiceRec('ja-JP');
           await speakScript("Japanese", "正しい発話を教えてほしいな。");
@@ -335,11 +335,12 @@ async function secondInteraction(){
       }
     }
   }
+  speakScript("Japanese", "お疲れさま、2回目のインタラクションは終わりだよ。");
 }
 
 
 async function thirdInteraction(){
-  //await speakScript("Japanese", "最後のインタラクションを始めるよ。");
+  await speakScript("Japanese", "最後に3回目のインタラクションを始めるよ。");
   const jsonObject = JSON.parse(fs.readFileSync("./data/third_interaction.json", "utf-8"));
   let count = 0;
   let correctFlag = 0;
@@ -363,7 +364,7 @@ async function thirdInteraction(){
     }
     await speakScript("Japanese", "僕が話した文で間違いはあったかな？");
     const response = await voiceRec('ja-JP');
-    if(response == "ある"){
+    if(response == "ある" || response == "R" || response == "あれ"){
       await speakScript("Japanese", "どういう間違いをしていたかな？");
       await voiceRec('ja-JP');
       await speakScript("Japanese", "正しい発話を教えてほしいな。");
@@ -393,6 +394,6 @@ async function thirdInteraction(){
     console.log(miss_arr3); //for debug
     count++;
   }
-  await speakScript("Japanese", "お疲れさま、これで英文読みあいは終わりだよ。");
-  await speakScript("Japanese", "また僕と一緒にお話ししようね。");
+  await speakScript("Japanese", "お疲れさま、これで英文の読みあいは終わりだよ。");
+  await speakScript("Japanese", "一緒に話してくれてありがとう！");
 } 

@@ -1,11 +1,15 @@
 var _tts;
 var _lang;
+var _vol;
 var _alMemory;
 var _as;
 var socket = io.connect();
 
 socket.on("SPEAKING_TO_CLIENT", (lang, msg) => {
     speech(lang, msg);
+});
+socket.on("SPEAKING_TO_CLIENT2", (lang, msg) => {
+    speech2(lang, msg);
 });
 socket.on("DISPLAY_TO_CLIENT", (text) => {
     $('#scripts').html('');
@@ -55,7 +59,14 @@ session.service("ALTextToSpeech").done((tts) => {
     }).fail(function (error) {
         console.log("An error occurred: " + error);
     });
-        
+    
+    _tts.getVolume().done(function (vol) { //言語の取得
+        console.log("volume is " + vol + " now");
+        _vol = vol;
+    }).fail(function (error) {
+        console.log("An error occurred: " + error);
+    });
+
 }).fail((error) => {
     console.log("An error occurred: " + error);
 });
@@ -99,11 +110,14 @@ session.service("ALAnimatedSpeech").done(function (as) {
 
 function speech(lang, msg){   
     console.log(msg);
-    //console.log(lang);
     _tts.setLanguage(lang).done().fail(function (error) { //言語の設定
         console.log("An error occurred: " + error);
     });
+    // console.log(lang);
+    // if(lang == "Japanese")     _tts.setVolume(0.3);
+    // else if(lang == "English") _tts.setVolume(1);
     _as.say(msg);
+   //_tts.setVolume(1);
     //_tts.say(msg);
     //socket.emit("SPOKE");
 }
