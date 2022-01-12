@@ -8,24 +8,15 @@ let socket = io.connect();
 let signalLink;
 let serviceDirectory;
 
-// socket.on("SPEAKING_TO_CLIENT", (lang, msg) => {
-//     speech(lang, msg);
-// }).on("DISPLAY_TO_CLIENT", (text) => {
-//     $('#scripts').html('');
-//     $('#scripts').html(text);
-// }).on("DISPLAY_ANSWER", (text) => {
-//     $('#answer').html('');
-//     $('#answer').html(text);
-// }).on("DISPLAY_ANSWER_BLANK", () => {
-//     $('#answer').html('');
-// });
-
 socket.on("SPEAKING_TO_CLIENT", (lang, msg) => {
     speech(lang, msg);
 });
-socket.on("DISPLAY_TO_CLIENT", (text) => {
+socket.on("DISPLAY_SCRIPTS", (text) => {
     $('#scripts').html('');
     $('#scripts').html(text);
+});
+socket.on("DISPLAY_SCRIPTS_BLANK", () => {
+    $('#scripts').html('');
 });
 socket.on("DISPLAY_ANSWER", (text) => {
     $('#answer').html('');
@@ -56,7 +47,7 @@ function start(mode){
 
 //↓Naoを動かす用
 
-let session = new QiSession("192.168.1.9:80");
+let session = new QiSession("192.168.1.10:80");
     session.socket().on('connect', function () {
         console.log('QiSession connected!');
         // now you can start using your QiSession
