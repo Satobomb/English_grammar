@@ -115,9 +115,6 @@ const recognizeSync = (lc) => {
 var io = socketio(server);
 
 io.sockets.on('connection', function (socket) {
-  // socket.on('VOICE_REC', () => {
-  //   voiceRec();
-  // });
   socket.on('SPEAKING_TO_SERVER', () => {
     startSpeaking("first");
   });

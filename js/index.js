@@ -53,9 +53,6 @@ function start(mode){
             break;
     }
 }
-// function voiceRecSt(){
-//     socket.emit("VOICE_REC");
-// }
 
 //↓Naoを動かす用
 
@@ -76,7 +73,7 @@ session.service("ALTextToSpeech").done((tts) => {
         console.log("An error occurred: " + error);
     });
     
-    _tts.getVolume().done(function (vol) { //言語の取得
+    _tts.getVolume().done(function (vol) { //音量の取得
         console.log("volume is " + vol + " now");
         _vol = vol;
     }).fail(function (error) {
