@@ -1,22 +1,22 @@
-var _tts;
-var _lang;
-var _vol;
-var _alMemory;
-var _as;
-var socket = io.connect();
+const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+let _tts;
+let _lang;
+let _vol;
+let _alMemory;
+let _as;
+let socket = io.connect();
+let signalLink;
+let serviceDirectory;
 
 socket.on("SPEAKING_TO_CLIENT", (lang, msg) => {
     speech(lang, msg);
-});
-socket.on("DISPLAY_TO_CLIENT", (text) => {
+}).on("DISPLAY_TO_CLIENT", (text) => {
     $('#scripts').html('');
     $('#scripts').html(text);
-});
-socket.on("DISPLAY_ANSWER", (text) => {
+}).on("DISPLAY_ANSWER", (text) => {
     $('#answer').html('');
     $('#answer').html(text);
-});
-socket.on("DISPLAY_ANSWER_BLANK", () => {
+}).on("DISPLAY_ANSWER_BLANK", () => {
     $('#answer').html('');
 });
 
@@ -34,7 +34,7 @@ function start(mode){
             break;
         case "test":
             socket.emit("SPEAKING_TO_SERVER4");
-        break;
+            break;
     }
 }
 // function voiceRecSt(){
@@ -43,7 +43,7 @@ function start(mode){
 
 //↓Naoを動かす用
 
-var session = new QiSession("192.168.1.9:80");
+let session = new QiSession("192.168.1.9:80");
     session.socket().on('connect', function () {
         console.log('QiSession connected!');
         // now you can start using your QiSession
@@ -71,9 +71,6 @@ session.service("ALTextToSpeech").done((tts) => {
     console.log("An error occurred: " + error);
 });
 
-var signalLink;
-var serviceDirectory;
-
 function onServiceAdded(serviceId, serviceName){
     console.log("New service", serviceId, serviceName);
     serviceDirectory.serviceAdded.disconnect(signalLink);
@@ -90,22 +87,24 @@ session.service("ServiceDirectory").done(function (sd) {
 
 session.service("ALMemory").done(function (ALMemory) {
     _alMemory = ALMemory;
+    _alMemory.subscriber("ALAnimatedSpeech/EndOfAnimatedSpeech").then(function (subscriber) {
+        subscriber.signal.connect(function () {
+            //await sleep(1000);
+            socket.emit('SPOKE');
+        });
+    });
     _alMemory.subscriber("FrontTactilTouched").done(function (subscriber) {
         // subscriber.signal is a signal associated to "FrontTactilTouched"
         subscriber.signal.connect(function (state) {
             console.log(state == 1 ? "You just touched my head!" : "Bye bye!");
         });
     });
-    _alMemory.subscriber("ALAnimatedSpeech/EndOfAnimatedSpeech").then(function (subscriber) {
-        subscriber.signal.connect(function (id) {
-            //await sleep(1000);
-            socket.emit('SPOKE');
-        });
-    });
 });
 
 session.service("ALAnimatedSpeech").done(function (as) {
     _as = as;
+}).fail((error) => {
+    this.printLog("Error : " + error);
 });
 
 function speech(lang, msg){   
@@ -113,11 +112,5 @@ function speech(lang, msg){
     _tts.setLanguage(lang).done().fail(function (error) { //言語の設定
         console.log("An error occurred: " + error);
     });
-    // console.log(lang);
-    // if(lang == "Japanese")     _tts.setVolume(0.3);
-    // else if(lang == "English") _tts.setVolume(1);
     _as.say(msg);
-   //_tts.setVolume(1);
-    //_tts.say(msg);
-    //socket.emit("SPOKE");
 }
