@@ -97,8 +97,7 @@ const recognizeSync = (lc) => {
 			.on('data', data => {
 				process.stdout.write(
 					data.results[0] && data.results[0].alternatives[0]
-						//? `Transcription: ${data.results[0].alternatives[0].transcript}\n`
-            ? `${data.results[0].alternatives[0].transcript}\n`
+            ? `学習者: ${data.results[0].alternatives[0].transcript}\n`
 						: '\n\nReached transcription time limit, press Ctrl+C\n'
 				)
 				resolve(data.results[0].alternatives[0].transcript);
@@ -170,7 +169,7 @@ async function doJsonCommands(jsonPath){
 }
 
 function speakScript(lang, msg) {
-  console.log(msg); //for debug
+  console.log("ロボット:" + msg); //for debug
   return new Promise((resolve) => {
     io.emit("SPEAKING_TO_CLIENT", lang, msg);
     let checkFlagDemon = setInterval(() => {
@@ -207,7 +206,7 @@ async function firstInteraction(){
       await speakScript(obj.lang, obj.msg);
     }
     count++;
-    console.log(miss_arr); //for debug
+    console.log("miss_arr:" + miss_arr); //for debug
     await sleep(3000);
   }
   await speakScript("Japanese", "お疲れさま、最初のインタラクションは終わりだよ。");
@@ -220,7 +219,7 @@ async function secondInteraction(){
   let count = 0;
   let correctFlag = 0;
   miss_arr = [0,1,0,1]; //for debug
-  console.log(miss_arr); //for debug
+  console.log("miss_arr:" + miss_arr); //for debug
   for (const obj of jsonObject) {
     io.emit("DISPLAY_TO_CLIENT", obj.txt);
     if(obj.ex == 0){
@@ -265,22 +264,22 @@ async function secondInteraction(){
       correctFlag = 0;
       miss_arr2[count] = 1;
     }
-    console.log(miss_arr2); //for debug
+    console.log("miss_arr2:" + miss_arr2); //for debug
     count++;
   }
   await speakScript("Japanese", "お疲れさま、2回目のインタラクションは終わりだよ。");
 }
 
 async function thirdInteraction(){
-  await speakScript("Japanese", "最後に3回目のインタラクションを始めるよ。");
-  await speakScript("Japanese", "このインタラクションでは、僕が空欄部分を話すからもし間違えていたら教えてほしいな");
+  // await speakScript("Japanese", "最後に3回目のインタラクションを始めるよ。");
+  // await speakScript("Japanese", "このインタラクションでは、僕が空欄部分を話すからもし間違えていたら教えてほしいな");
   const jsonObject = JSON.parse(fs.readFileSync("./data/third_interaction.json", "utf-8"));
   let count = 0;
   let correctFlag = 0;
   miss_arr = [0,1,0,1]; //for debug
   miss_arr2 = [1,0,0,1]; //for debug
-  console.log(miss_arr); //for debug
-  console.log(miss_arr2); //for debug
+  console.log("miss_arr:" + miss_arr); //for debug
+  console.log("miss_arr2:" + miss_arr2); //for debug
   for (const obj of jsonObject) {
     io.emit("DISPLAY_TO_CLIENT", obj.txt);
     if(obj.ex == 0){
@@ -321,7 +320,7 @@ async function thirdInteraction(){
         io.emit("DISPLAY_ANSWER_BLANK");
       }
     }
-    console.log(miss_arr3); //for debug
+    console.log("miss_arr3:" + miss_arr3); //for debug
     count++;
   }
   await speakScript("Japanese", "お疲れさま、これで英文の読みあいは終わりだよ。");
@@ -353,7 +352,7 @@ async function test(){
       await speakScript(obj.lang, obj.msg);
     }
     count++;
-    console.log(miss_arr); //for debug
+    console.log("miss_arr4:" + miss_arr4); //for debug
     await sleep(3000);
   }
   await speakScript("Japanese", "お疲れさま、最初のインタラクションは終わりだよ。");

@@ -8,17 +8,33 @@ let socket = io.connect();
 let signalLink;
 let serviceDirectory;
 
+// socket.on("SPEAKING_TO_CLIENT", (lang, msg) => {
+//     speech(lang, msg);
+// }).on("DISPLAY_TO_CLIENT", (text) => {
+//     $('#scripts').html('');
+//     $('#scripts').html(text);
+// }).on("DISPLAY_ANSWER", (text) => {
+//     $('#answer').html('');
+//     $('#answer').html(text);
+// }).on("DISPLAY_ANSWER_BLANK", () => {
+//     $('#answer').html('');
+// });
+
 socket.on("SPEAKING_TO_CLIENT", (lang, msg) => {
     speech(lang, msg);
-}).on("DISPLAY_TO_CLIENT", (text) => {
+});
+socket.on("DISPLAY_TO_CLIENT", (text) => {
     $('#scripts').html('');
     $('#scripts').html(text);
-}).on("DISPLAY_ANSWER", (text) => {
+});
+socket.on("DISPLAY_ANSWER", (text) => {
     $('#answer').html('');
     $('#answer').html(text);
-}).on("DISPLAY_ANSWER_BLANK", () => {
+});
+socket.on("DISPLAY_ANSWER_BLANK", () => {
     $('#answer').html('');
 });
+
 
 
 function start(mode){
