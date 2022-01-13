@@ -47,7 +47,7 @@ function start(mode){
 
 //↓Naoを動かす用
 
-let session = new QiSession("192.168.1.10:80");
+let session = new QiSession("192.168.1.9:80");
     session.socket().on('connect', function () {
         console.log('QiSession connected!');
         // now you can start using your QiSession
@@ -116,5 +116,7 @@ function speech(lang, msg){
     _tts.setLanguage(lang).done().fail(function (error) { //言語の設定
         console.log("An error occurred: " + error);
     });
+    if(lang == "Japanese")     _tts.setVolume(0.3);
+    else if(lang == "English") _tts.setVolume(1);
     _as.say(msg);
 }
