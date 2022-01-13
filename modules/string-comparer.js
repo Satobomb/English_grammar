@@ -1,7 +1,5 @@
 const metaphone = require('metaphone');
 
-
-
 exports.cleanString = (str) => {
     return str.replace('50', 'fifty')
               .replace(/&apos;/g, '')
@@ -11,12 +9,13 @@ exports.cleanString = (str) => {
 }
 
 exports.calcAccuracy = (src, dst) => {
-    src = metaphone(this.cleanString(src));
-    dst = metaphone(this.cleanString(dst));
-  
-    distance = calcLevenshteinDistance(src, dst);
-    const acc = (1.0 - distance / dst.length) * 100;
-    return acc;
+  console.log(typeof metaphone)
+  src = metaphone(this.cleanString(src));
+  dst = metaphone(this.cleanString(dst));
+
+  distance = calcLevenshteinDistance(src, dst);
+  const acc = (1.0 - distance / dst.length) * 100;
+  return acc;
 }
 
 exports.selectSimilarWord = (target, words) => {

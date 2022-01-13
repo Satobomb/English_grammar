@@ -9,13 +9,15 @@ let miss_arr = [];
 let miss_arr2 = [];
 let miss_arr3 = [];
 let miss_arr4 = [];
-// const strComparer = require('./modules/string-comparer');
-// const metaphone = require('metaphone');
+
+//const metaphone = import('metaphone');
 // /* kuroshiro : Japanese Sentence => Hiragana, Katakana or Romaji */
-// const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
-// const Kuroshiro = require('kuroshiro');
-// const kuroshiro = new Kuroshiro();
-// kuroshiro.init(new KuromojiAnalyzer());
+const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
+const Kuroshiro = require('kuroshiro');
+const kuroshiro = new Kuroshiro();
+kuroshiro.init(new KuromojiAnalyzer());
+
+const strComparer = require('./modules/string-comparer');
 
 for(let i = 0;i < arr_len; i++){
   miss_arr[i] = 0; //1が正解、0が不正解
@@ -289,7 +291,7 @@ async function thirdInteraction(){
     if(count != 0) await speakScript("Japanese", "次に行くね");
     if(obj.ex == 0){
       await voiceRec('en-US');
-      await speakScript(obj.lang, obj.msg);
+      await speakScript(obj.lang, "\\rspd=70\\" + obj.msg);
     }else if(obj.ex == 1){
       await sleep(3000);
       await speakScript(obj.lang, obj.msg);
@@ -298,7 +300,10 @@ async function thirdInteraction(){
     await sleep(3000);
     await speakScript("Japanese", "僕が話した文で間違いはあったかな？");
     const response = await voiceRec('ja-JP');
-    if(response == "ある" || response == "R" || response == "あれ"){
+    const romaji_response = await kuroshiro.convert(response, {to: "romaji"});
+    console.log(romaji_response);
+    const selected = strComparer.selectSimilarWord(romaji_response, ["aru", "nai"]);
+    if(selected == "aru"){
       await speakScript("Japanese", "どういう間違いをしていたかな？");
       await voiceRec('ja-JP');
       await speakScript("Japanese", "正しい発話を教えてほしいな。");
@@ -327,7 +332,7 @@ async function thirdInteraction(){
         await sleep(3000);
         await speakScript("Japanese", "あれ、答えが画面に出てるみたいだよ");
         io.emit("DISPLAY_ANSWER", obj.correctText);
-        await speakScript("Japanese", "なるほど、答えこんな感じだったのか");
+        await speakScript("Japanese", "なるほど、答えはこんな感じだったのか");
         await speakScript("Japanese", "僕も勉強になったよ");
         await sleep(8000);
         io.emit("DISPLAY_ANSWER_BLANK");

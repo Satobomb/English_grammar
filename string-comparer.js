@@ -1,4 +1,4 @@
-const metaphone = require('./node_modules/metaphone');
+const metaphone = import('metaphone');
 
 
 
