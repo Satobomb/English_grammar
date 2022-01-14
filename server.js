@@ -190,7 +190,7 @@ async function firstInteraction(){
     if(count != 0) await speakScript("Japanese", "次の会話文に行くね");
     if(obj.ex == 0){
       await sleep(3000);
-      await speakScript(obj.lang, obj.msg);
+      await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
       const result = await voiceRec('en-US');
       const words = result.split(" ");
       for(const data of words){
@@ -202,7 +202,7 @@ async function firstInteraction(){
       for(const data of words){
         if(data === obj.key) miss_arr[count] = 1;
       }
-      await speakScript(obj.lang, obj.msg);
+      await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
     }
     count++;
     console.log("miss_arr:" + miss_arr); //for debug
@@ -227,7 +227,7 @@ async function secondInteraction(){
     if(count != 0) await speakScript("Japanese", "次に行くね");
     if(obj.ex == 0){
       await sleep(3000);
-      await speakScript(obj.lang, obj.msg);
+      await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
       const result = await voiceRec('en-US');
       const words = result.split(" ");
       for(const data of words){
@@ -239,7 +239,7 @@ async function secondInteraction(){
       for(const data of words){
         if(data === obj.key) correctFlag = 1;
       }
-      await speakScript(obj.lang, obj.msg);
+      await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
     }
     await sleep(3000);
     if(correctFlag == 0){
@@ -247,18 +247,18 @@ async function secondInteraction(){
         await speakScript("Japanese", "間違えて発話していたよ。");
         await speakScript("Japanese", "正しい発話はこんな感じだよ。");
         io.emit("DISPLAY_ANSWER", obj.correctText);
-        await speakScript(obj.lang, "\\rspd=80\\" + obj.correctText);
+        await speakScript(obj.lang, "\\rspd=70\\" + obj.practiceText);
         await sleep(5000);
         io.emit("DISPLAY_ANSWER_BLANK");
       }else if(miss_arr[count] == 0){
         await speakScript("Japanese", "間違えて発話していたよ。");
         await speakScript("Japanese", "正しい発話はこんな感じだよ。");
         io.emit("DISPLAY_ANSWER", obj.correctText);
-        await speakScript(obj.lang, "\\rspd=80\\" + obj.correctText);
+        await speakScript(obj.lang, "\\rspd=70\\" + obj.practiceText);
         await sleep(5000);
         await speakScript("Japanese", "君はこの分野が苦手みたいだから発話練習をしてみよう！");
         await speakScript("Japanese", "僕に続いて発話してみてね");
-        await speakScript(obj.lang, "\\rspd=80\\" + obj.practiceText);
+        await speakScript(obj.lang, "\\rspd=70\\" + obj.practiceText);
         await voiceRec('en-US');
         await speakScript("Japanese", "いい感じだね");
         io.emit("DISPLAY_ANSWER_BLANK");
@@ -291,10 +291,10 @@ async function thirdInteraction(){
     if(count != 0) await speakScript("Japanese", "次に行くね");
     if(obj.ex == 0){
       await voiceRec('en-US');
-      await speakScript(obj.lang, "\\rspd=70\\" + obj.msg);
+      await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
     }else if(obj.ex == 1){
       await sleep(3000);
-      await speakScript(obj.lang, obj.msg);
+      await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
       await voiceRec('en-US');
     }
     await sleep(3000);
@@ -314,11 +314,13 @@ async function thirdInteraction(){
         if(data === obj.key) correctFlag = 1;
       }
       if(correctFlag == 1){
+        correctFlag = 0;
         miss_arr3[count] = 1;
       }else if(correctFlag == 0){
         await sleep(3000);
         await speakScript("Japanese", "あれ、答えが画面に出てるみたいだよ");
         io.emit("DISPLAY_ANSWER", obj.correctText);
+        await sleep(3000);
         await speakScript("Japanese", "なるほど、答えはこんな感じだったのか");
         await speakScript("Japanese", "僕も勉強になったよ");
         await sleep(8000);
@@ -332,6 +334,7 @@ async function thirdInteraction(){
         await sleep(3000);
         await speakScript("Japanese", "あれ、答えが画面に出てるみたいだよ");
         io.emit("DISPLAY_ANSWER", obj.correctText);
+        await sleep(3000);
         await speakScript("Japanese", "なるほど、答えはこんな感じだったのか");
         await speakScript("Japanese", "僕も勉強になったよ");
         await sleep(8000);
@@ -358,7 +361,7 @@ async function test(){
     io.emit("DISPLAY_SCRIPTS", obj.txt2);
     if(obj.ex == 0){
       await sleep(3000);
-      await speakScript(obj.lang, obj.msg);
+      await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
       const result = await voiceRec('en-US');
       const words = result.split(" ");
       for(const data of words){
@@ -370,7 +373,7 @@ async function test(){
       for(const data of words){
         if(data === obj.key) miss_arr4[count] = 1;
       }
-      await speakScript(obj.lang, obj.msg);
+      await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
     }
     count++;
     console.log("miss_arr4:" + miss_arr4); //for debug
