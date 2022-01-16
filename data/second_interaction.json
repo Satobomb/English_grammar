@@ -1,38 +1,42 @@
 [
     {
         "lang": "English",
-        "msg": "He plays baseball very well.",
+        "msg": "If you have a cold, you should be absent from school.",
+        "key": "may",
+        "key2": "",
+        "txt": "A: もし風邪を引いているなら、学校を休んだ方が良いよ。<br>A: If you have a cold, you should be absent from school.<br>B: そうかもしれないね。アドバイスありがとう！<br>B: It (　　　) be true. Thank you for your advice.",
+        "correctText": "It (may) be true. Thank you for your advice.",
+        "practiceText": "It may be true. Thank you for your advice.",
+        "ex": 0
+    },
+    {
+        "lang": "English",
+        "msg": "I lost my wallet, do you know?",
+        "key": "found",
+        "key2": "discovered",
+        "txt": "A: 財布をなくしたんだけど、知らない？<br>A: I lost my wallet, do you know?<br>B: 昨日、教室で見つけたから先生のところに持って行ったよ。<br>B: I (　　　) it in the classroom yesterday, so I took it to my teacher.<br>",
+        "correctText": "I (found) it in the classroom yesterday, so I took it to my teacher.",
+        "practiceText": "I found it in the classroom yesterday, so I took it to my teacher.",
+        "ex": 0
+    },
+    {
+        "lang": "English",
+        "msg": "He is good at playing sports.",
         "key": "seems",
-        "txt": "A: 彼は野球が上手だよ。<br> A: He plays baseball very well. <br> B: すごいね、彼は勉強も得意らしいよ。 <br> B: Wow, he (　　　) to be good at studying too.",
-        "correctText": "Wow, he (seems) to be good at studying too.",
-        "practiceText": "Wow, he seems to be good at studying too.",
+        "key2": "appears",
+        "txt": "A: 彼はスポーツが得意だよ。<br>A: He is good at playing sports.<br>B: そうだよね、彼は勉強もできるらしいよ。<br>B: That's right, it (　　　) that he is good at studying too.",
+        "correctText": "That's right, it (seems) that he is good at studying too.",
+        "practiceText": "That's right, it seems that he is good at studying too.",
         "ex": 0
     },
     {
         "lang": "English",
-        "msg": "I saw him at the park near the station yesterday.",
-        "key": "said",
-        "txt": "A: 僕は昨日、駅近くの公園で彼を見かけたよ。 <br> A: I saw him at the park near the station yesterday. <br> B: 本当？彼はさっき、直接家に帰ったって言ってたわよ。 <br> B: Really? He (　　　) that he went home directly just now.",
-        "correctText": "Really? He (said) that he went home directly just now.",
-        "practiceText": "Really? He said that he went home directly just now.",
-        "ex": 0
-    },
-    {
-        "lang": "English",
-        "msg": "Yes, but this chair is made of iron.",
-        "key": "made",
-        "txt": "A: このテーブルは木でできているの？ <br> A: Is this table (　　　) of wood? <br> B: そうだよ、だけどこの椅子は鉄でできているんだ。 <br> B: Yes, but this chair is made of iron.",
-        "correctText": "Is this table (made) of wood?",
-        "practiceText": "Is this table made of wood?",
-        "ex": 1
-    },
-    {
-        "lang": "English",
-        "msg": "Can you help me after school?",
-        "key": "must",
-        "txt": "A: 学校が終わったら、手を貸してもらってもいいかな？ <br> A: Can you help me after school? <br> B: もちろん、ただその前にこの宿題を出しに行かないと。 <br> B: Of course, but I (　　　) hand in this homework before that.",
-        "correctText": "Of course, but I (must) hand in this homework before that.",
-        "practiceText": "Of course, but I must hand in this homework before that.",
+        "msg": "This room is clean these days.",
+        "key": "cleaned",
+        "key2": "wiped",
+        "txt": "A: 最近、この部屋きれいだね。<br>A: This room is clean these days.<br>B: 今年から毎週、床を掃除することになったんだよ。<br>B: The floor will be (　　　) every week from this year.",
+        "correctText": "The floor will be (cleaned) every week from this year.",
+        "practiceText": "The floor will be cleaned every week from this year.",
         "ex": 0
     }
 ]

@@ -47,7 +47,7 @@ function start(mode){
 
 //↓Naoを動かす用
 
-let session = new QiSession("192.168.1.9:80");
+let session = new QiSession("192.168.1.12:80");
     session.socket().on('connect', function () {
         console.log('QiSession connected!');
         // now you can start using your QiSession
