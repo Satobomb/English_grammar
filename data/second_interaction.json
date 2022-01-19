@@ -4,7 +4,7 @@
         "msg": "If you have a cold, you should be absent from school.",
         "key": "may",
         "key2": "",
-        "txt": "A: もし風邪を引いているなら、学校を休んだ方が良いよ。<br>A: If you have a cold, you should be absent from school.<br>B: そうかもしれないね。アドバイスありがとう！<br>B: It (　　　) be true. Thank you for your advice.",
+        "txt": "A: もし風邪を引いているなら、学校を休んだ方が良いよ。<br>A: If you have a cold, you should be absent from school.<br><br>B: そうかもしれないね。アドバイスありがとう！<br>B: It (　　　) be true. Thank you for your advice.",
         "correctText": "It (may) be true. Thank you for your advice.",
         "practiceText": "It may be true. Thank you for your advice.",
         "ex": 0
@@ -14,9 +14,9 @@
         "msg": "I lost my wallet, do you know?",
         "key": "found",
         "key2": "discovered",
-        "txt": "A: 財布をなくしたんだけど、知らない？<br>A: I lost my wallet, do you know?<br>B: 昨日、教室で見つけたから先生のところに持って行ったよ。<br>B: I (　　　) it in the classroom yesterday, so I took it to my teacher.<br>",
-        "correctText": "I (found) it in the classroom yesterday, so I took it to my teacher.",
-        "practiceText": "I found it in the classroom yesterday, so I took it to my teacher.",
+        "txt": "A: 財布をなくしたんだけど、知らない？<br>A: I lost my wallet, do you know?<br><br>B: 昨日、教室で見つけたよ。<br>B: I (　　　) it in the classroom yesterday.<br>",
+        "correctText": "I (found) it in the classroom yesterday.",
+        "practiceText": "I found it in the classroom yesterday.",
         "ex": 0
     },
     {
@@ -24,7 +24,7 @@
         "msg": "He is good at playing sports.",
         "key": "seems",
         "key2": "appears",
-        "txt": "A: 彼はスポーツが得意だよ。<br>A: He is good at playing sports.<br>B: そうだよね、彼は勉強もできるらしいよ。<br>B: That's right, it (　　　) that he is good at studying too.",
+        "txt": "A: 彼はスポーツが得意だよ。<br>A: He is good at playing sports.<br><br>B: そうだよね、彼は勉強もできるらしいよ。<br>B: That's right, it (　　　) that he is good at studying too.",
         "correctText": "That's right, it (seems) that he is good at studying too.",
         "practiceText": "That's right, it seems that he is good at studying too.",
         "ex": 0
@@ -34,7 +34,7 @@
         "msg": "This room is clean these days.",
         "key": "cleaned",
         "key2": "wiped",
-        "txt": "A: 最近、この部屋きれいだね。<br>A: This room is clean these days.<br>B: 今年から毎週、床を掃除することになったんだよ。<br>B: The floor will be (　　　) every week from this year.",
+        "txt": "A: 最近、この部屋きれいだね。<br>A: This room is clean these days.<br><br>B: 今年から毎週、床を掃除することになったんだよ。<br>B: The floor will be (　　　) every week from this year.",
         "correctText": "The floor will be (cleaned) every week from this year.",
         "practiceText": "The floor will be cleaned every week from this year.",
         "ex": 0

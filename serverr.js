@@ -147,7 +147,6 @@ async function voiceRec(language){
 async function startSpeaking(mode){
   switch (mode) {
     case "first":
-      await doJsonCommands("./data/script.json");
       await firstInteraction();
       break;
     case "second":
@@ -183,6 +182,9 @@ function speakScript(lang, msg) {
 
 async function firstInteraction(){
   const jsonObject = JSON.parse(fs.readFileSync("./data/first_interaction.json", "utf-8"));
+  await speakScript("Japanese", "今から英語のインタラクションを始めるよ");
+  await speakScript("Japanese", "このインタラクションでは、空欄になっている文を君に話してもらいたいな");
+  await speakScript("Japanese", "それじゃあ始めるよ");
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
   for (const obj of jsonObject) { 
@@ -354,7 +356,7 @@ async function test(){
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
   for (const obj of jsonObject) { 
-    if(count != 0) await speakScript("Japanese", "次に行くね");
+    if(count != 0) await speakScript("Japanese", "次に行くよ");
     io.emit("DISPLAY_SCRIPTS", obj.txt);
     await sleep(8000);
     io.emit("DISPLAY_SCRIPTS", obj.txt2);
@@ -379,6 +381,6 @@ async function test(){
     await sleep(3000);
   }
   await speakScript("Japanese", "お疲れさま、これで4回目のインタラクションは終わりだよ。");
-  await speakScript("Japanese", "一緒に話してくれてありがとう！");
+  //await speakScript("Japanese", "一緒に話してくれてありがとう！");
   io.emit("DISPLAY_SCRIPTS_BLANK");
 }

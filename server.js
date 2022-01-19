@@ -220,11 +220,11 @@ async function secondInteraction(){
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
   let correctFlag = 0;
-  miss_arr = [0,1,0,1]; //for debug
+  // miss_arr = [0,1,0,1]; //for debug
   console.log("miss_arr:" + miss_arr); //for debug
   for (const obj of jsonObject) {
     io.emit("DISPLAY_SCRIPTS", obj.txt);
-    if(count != 0) await speakScript("Japanese", "次に行くね");
+    if(count != 0) await speakScript("Japanese", "次に行くよ");
     if(obj.ex == 0){
       await sleep(3000);
       await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
@@ -283,8 +283,8 @@ async function thirdInteraction(){
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
   let correctFlag = 0;
-  miss_arr = [0,1,0,1]; //for debug
-  miss_arr2 = [1,0,0,1]; //for debug
+  // miss_arr = [0,1,0,1]; //for debug
+  // miss_arr2 = [1,0,0,1]; //for debug
   console.log("miss_arr:" + miss_arr); //for debug
   console.log("miss_arr2:" + miss_arr2); //for debug
   for (const obj of jsonObject) {
@@ -299,15 +299,16 @@ async function thirdInteraction(){
       await voiceRec('en-US');
     }
     await sleep(3000);
-    await speakScript("Japanese", "僕が話した文で間違いはあったかな？");
+    await speakScript("Japanese", "僕が話した文は間違えていたかな？間違えていたら間違ってる、正しかったら正しいって言ってね。");
     const response = await voiceRec('ja-JP');
     const romaji_response = await kuroshiro.convert(response, {to: "romaji"});
     console.log(romaji_response);
-    const selected = strComparer.selectSimilarWord(romaji_response, ["aru", "nai"]);
-    if(selected == "aru"){
+    //const selected = strComparer.selectSimilarWord(romaji_response, ["aru", "nai"]);
+    const selected = strComparer.selectSimilarWord(romaji_response, ["machigatteru", "tadashii"]);
+    if(selected == "machigatteru"){
       await speakScript("Japanese", "どういう間違いをしていたかな？");
       await voiceRec('ja-JP');
-      await speakScript("Japanese", "正しい発話を教えてほしいな。");
+      await speakScript("Japanese", "正しい単語を空欄に埋めて、英文を発話して教えてほしいな");
       const result = await voiceRec('en-US');
       await speakScript("Japanese", "なるほどね、ありがとう!");
       const words = result.split(" ");
@@ -328,7 +329,7 @@ async function thirdInteraction(){
         io.emit("DISPLAY_ANSWER_BLANK");
       }
     }else{
-      await speakScript("Japanese", "なかったんだね、わかったよ。");
+      await speakScript("Japanese", "間違いはなかったんだね、わかったよ。");
       if(obj.correct == 1){
         miss_arr3[count] = 1;
       }else if(obj.correct == 0){
@@ -357,7 +358,7 @@ async function test(){
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
   for (const obj of jsonObject) { 
-    if(count != 0) await speakScript("Japanese", "次に行くね");
+    if(count != 0) await speakScript("Japanese", "次に行くよ");
     io.emit("DISPLAY_SCRIPTS", obj.txt);
     await sleep(8000);
     io.emit("DISPLAY_SCRIPTS", obj.txt2);
