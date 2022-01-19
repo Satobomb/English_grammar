@@ -1,31 +1,31 @@
 [
     {
         "lang": "English",
-        "msg": "He plays baseball very well.",
-        "key": "seems",
-        "txt": "A: 彼は野球が上手だよ。<br> A: He plays baseball very well. <br> B: すごいね、彼は勉強も得意らしいよ。 <br> B: Wow, he (　　　) to be good at studying too.",
+        "msg": "We're going on a trip tomorrow, right?",
+        "key": "must",
+        "txt": "A: 僕たちは明日、旅行に行くんだよね？<br>A: We're going on a trip tomorrow, right?<br><br>B: そうだよ、だから明日の朝は7時に起きないと。<br>B: That’s right. So, we (　　　) get up at seven tomorrow morning.",
         "ex": 0
     },
     
     { 
         "lang": "English",
-        "msg": "I saw him at the park near the station yesterday.",
-        "key": "said",
-        "txt": "A: 僕は昨日、駅近くの公園で彼を見かけたよ。 <br> A: I saw him at the park near the station yesterday. <br> B: 本当？彼はさっき、直接家に帰ったって言ってたわよ。 <br> B: Really? He (　　　) that he went home directly just now.",
+        "msg": "What did you do last weekend?",
+        "key": "played",
+        "txt": "A: 先週末は何をしたの？<br>A: What did you do last weekend?<br><br>B: 友達と公園でテニスをしたよ。<br>B: I (　　　) tennis with my friends in the park.",
         "ex": 0
     },
     {
         "lang": "English",
-        "msg": "Yes, but this chair is made of iron.",
-        "key": "made",
-        "txt": "A: このテーブルは木でできているの？ <br> A: Is this table (　　　) of wood? <br> B: そうだよ、だけどこの椅子は鉄でできているんだ。 <br> B: Yes, but this chair is made of iron.",
-        "ex": 1
+        "msg": "Do you have any hobbies?",
+        "key": "makes",
+        "txt": "A: 何か趣味はあるの？<br>A: Do you have any hobbies?<br><br>B: 歌を歌うことだよ。歌うと幸せになるんだ。<br>B: It's about singing a song. It (　　　) me happy.",
+        "ex": 0
     },
     {
         "lang": "English",
-        "msg": "Can you help me after school?",
-        "key": "must",
-        "txt": "A: 学校が終わったら、手を貸してもらってもいいかな？ <br> A: Can you help me after school? <br> B: もちろん、ただその前にこの宿題を出しに行かないと。 <br> B: Of course, but I (　　　) hand in this homework before that.",
+        "msg": "Do you know the teacher at our school is going to retire?",
+        "key": "surprised",
+        "txt": "A: うちの学校の先生が退職するって話、知ってた？<br>A: Do you know the teacher at our school is going to retire?<br><br>B: 僕も昨日知ったんだ。聞いてびっくりしたよ。<br>B: I knew that yesterday too. I was (　　　) to hear that.",
         "ex": 0
     }
 ]
