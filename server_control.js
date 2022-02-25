@@ -268,7 +268,7 @@ async function secondInteraction(){
     //   miss_arr2[count] = 1;
     // }
     io.emit("DISPLAY_ANSWER", obj.correctText);
-    await sleep(8000);
+    await sleep(800000);
     io.emit("DISPLAY_ANSWER_BLANK");
     console.log("miss_arr2:" + miss_arr2); //for debug
     count++;
