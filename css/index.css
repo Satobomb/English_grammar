@@ -1,6 +1,8 @@
-.text {
-    display: none;
-    font-size: 40px;
+#scripts {
+    font-size: 60px;
+    }
+#answer {
+    font-size: 60px;
     }
 .btn {
     width: 200px;

@@ -1,0 +1,103 @@
+[
+    
+    {
+        "lang": "English",
+        "msg": "I lost my wallet, do you know?",
+        "key": "found",
+        "txt": "A: 財布をなくしたんだけど、知らない？<br><br><br>B: 昨日、教室で見つけたよ。",
+        "txt2": "A: I lost my wallet, do you know?<br><br><br>B: I (　　　) it in the classroom yesterday.",
+        "ex": 0
+    },
+    
+    
+    {
+        "lang": "English",
+        "msg": "Is there any place you would like to go?",
+        "key": "can",
+        "txt": "A: どこか行ってみたいところはある？<br><br><br>B: 大阪に行ってみたいな、美味しいものがたくさん食べられるから。",
+        "txt2": "A: Is there any place you would like to go?<br><br><br>B: I want to go to Osaka because I (　　　) eat a lot of delicious food.",
+        "ex": 0
+    },
+    {
+        "lang": "English",
+        "msg": "If you have a cold, you should be absent from school.",
+        "key": "may",
+        "txt": "A: もし風邪を引いているなら、学校を休んだ方が良いよ。<br><br><br>B: そうかもしれないね。アドバイスありがとう！",
+        "txt2": "A: If you have a cold, you should be absent from school.<br><br><br>B: It (　　　) be true. Thank you for your advice.",
+        "ex": 0
+    },
+    { 
+        "lang": "English",
+        "msg": " That’s good. You should watch this movie because it is more interesting than this book.",
+        "key": "was",
+        "txt": "A: 君に借りたこの本はとても面白かったよ。<br><br><br>B: それは良かった。この映画も見るべきだよ。本よりも面白いから。",
+        "txt2": "A: This book that I borrowed from you (　　　) very interesting. <br><br><br> B: That’s good. You should watch this movie because it is more interesting than this book.",
+        "ex": 1
+    },
+    
+    {
+        "lang": "English",
+        "msg": "I want to go to Spain someday.",
+        "key": "spoken",
+        "txt": "A: いつかスペインに行ってみたいな。<br><br><br>B: スペインではスペイン語が話されるから勉強しなくちゃ。",
+        "txt2": "A: I want to go to Spain someday.<br><br><br>B: Spanish is (　　　) in Spain so I have to study.",
+        "ex": 0
+    },
+    {
+        "lang": "English",
+        "msg": "Can you help me after this class?",
+        "key": "must",
+        "txt": "A: この授業が終わったら手伝ってもらってもいい？ <br><br><br> B: もちろん。ただ、その前にこの宿題を提出しにいかないと。",
+        "txt2": "A: Can you help me after this class? <br><br><br> B: Of course, but I (　　　) hand in this homework before that.",
+        "ex": 0
+    },
+    {
+        "lang": "English",
+        "msg": "I saw him in the park near the station yesterday.",
+        "key": "went",
+        "txt": "A: 昨日、彼を駅近くの公園で見たよ。<br><br><br>B: 本当？彼はさっき直接家に帰ったって言ってたよ。",
+        "txt2": "A: I saw him in the park near the station yesterday. <br><br><br> B: Really? He said that he (　　　) home directly just now.",
+        "ex": 0
+    },
+    {
+        "lang": "English",
+        "msg": "Then I can see you at school soon.",
+        "key": "starts",
+        "txt": "A: アメリカでは学校は9月から始まるよ。<br><br><br>B: それならもうすぐ学校で会えるね。",
+        "txt2": "A: In the United States, the school year (　　　) in September. <br><br><br> B: Then I can see you at school soon.",
+        "ex": 1
+    },
+    
+    {
+        "lang": "English",
+        "msg": "This book is very easy to read.",
+        "key": "written",
+        "txt": "A: この本、とても読みやすいね。<br><br><br>B: この本は僕のお父さんが書いたんだよ。",
+        "txt2": "A: This book is very easy to read. <br><br><br> B: This book was (　　　) by my father.",
+        "ex": 0
+    },
+    {
+        "lang": "English",
+        "msg": "How far is the movie theater near here?",
+        "key": "takes",
+        "txt": "A: ここから近い映画館はどのくらい遠いの？<br><br><br>B: そこまで歩くと1時間かかるね。",
+        "txt2": "A: How far is the movie theater near here? <br><br><br> B: It (　　　) an hour to walk from here to there.",
+        "ex": 0
+    },
+    {
+        "lang": "English",
+        "msg": "I did not know that. I also like it so let's go see baseball next time.",
+        "key": "interested",
+        "txt": "A: 僕はスポーツ観戦に興味があるんだ。<br><br><br>B: 知らなかったよ。僕も好きだから今度、野球を見に行こうよ。",
+        "txt2": "A: I am (　　　) in watching sports. <br><br><br> B: I did not know that. I also like it so let's go see baseball next time.",
+        "ex": 1
+    },
+    {
+        "lang": "English",
+        "msg": "Wow, he and you are very close.",
+        "key": "comes",
+        "txt": "A: 彼はよく僕の家に来るんだ。<br><br><br>B: そうなんだ、彼と君はとても仲がいいんだね。",
+        "txt2": "A: He often (　　　) to my house.<br><br><br>B: Wow, he and you are very close.",
+        "ex": 1
+    }
+]

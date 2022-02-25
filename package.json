@@ -1,5 +1,21 @@
 {
+  "name": "english_grammer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "http": "^0.0.1-security"
+    "@google-cloud/speech": "^4.9.0",
+    "http": "^0.0.1-security",
+    "kuroshiro": "^1.1.2",
+    "kuroshiro-analyzer-kuromoji": "^1.1.0",
+    "metaphone": "^1.0.6",
+    "node-record-lpcm16": "^1.0.1",
+    "socket.io": "^4.3.2"
   }
 }
