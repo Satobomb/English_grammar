@@ -4,7 +4,7 @@
         "lang": "English",
         "msg": "I lost my wallet, do you know?",
         "key": "found",
-        "txt": "A: 財布をなくしたんだけど、知らない？<br><br><br>B: 昨日、教室で見つけたよ",
+        "txt": "A: 財布をなくしたんだけど、知らない？<br><br><br>B: 昨日、教室で見つけたよ。",
         "txt2": "A: I lost my wallet, do you know?<br><br><br>B: I (　　　) it in the classroom yesterday.",
         "ex": 0
     },
