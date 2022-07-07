@@ -147,7 +147,7 @@ async function voiceRec(language){
 async function startSpeaking(mode){
   switch (mode) {
     case "first":
-      await doJsonCommands("./data/script.json");
+      //await doJsonCommands("./data/script.json");
       await firstInteraction();
       break;
     case "second":
