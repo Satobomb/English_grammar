@@ -1,0 +1,23 @@
+[
+    {
+        "key": "must",
+        "txt": "そうだよ、だから明日の朝は7時に起きないと。<br>That’s right. So, we (　　　) get up at seven tomorrow morning.",
+        "unit": "3単元"
+    },
+    
+    { 
+        "key": "played",
+        "txt": "友達と公園でテニスをしたよ。<br>I (　　　) tennis with my friends in the park.",
+        "unit": "過去形"
+    },
+    {
+        "key": "makes",
+        "txt": "歌を歌うことだよ。歌うと幸せになるんだ。<br>It's about singing a song. It (　　　) me happy.",
+        "unit": "助動詞"
+    },
+    {
+        "key": "surprised",
+        "txt": "僕も昨日知ったんだ。聞いてびっくりしたよ。<br>I knew that yesterday too. I was (　　　) to hear that.",
+        "unit": "受動態"
+    }
+]
