@@ -1,0 +1,35 @@
+[
+    {
+        "lang": "English",
+        "msg": "We're going on a trip tomorrow, right?",
+        "key": "must",
+        "txt": "ロボット: 僕たちは明日、旅行に行くんだよね？<br>　　　　　We're going on a trip tomorrow, right?<br><br>学習者: そうだよ、だから明日の朝は7時に起きないと。<br>　　　　That’s right. So, we (　　　) get up at seven tomorrow morning.",
+        "ex": 0,
+        "unit": "3単元"
+    },
+    
+    { 
+        "lang": "English",
+        "msg": "What did you do last weekend?",
+        "key": "played",
+        "txt": "ロボット: 先週末は何をしたの？<br>ロボット: What did you do last weekend?<br><br>学習者: 友達と公園でテニスをしたよ。<br>学習者: I (　　　) tennis with my friends in the park.",
+        "ex": 0,
+        "unit": "過去形"
+    },
+    {
+        "lang": "English",
+        "msg": "Do you have any hobbies?",
+        "key": "makes",
+        "txt": "ロボット: 何か趣味はあるの？<br>ロボット: Do you have any hobbies?<br><br>学習者: 歌を歌うことだよ。歌うと幸せになるんだ。<br>学習者: It's about singing a song. It (　　　) me happy.",
+        "ex": 0,
+        "unit": "助動詞"
+    },
+    {
+        "lang": "English",
+        "msg": "Do you know the teacher at our school is going to retire?",
+        "key": "surprised",
+        "txt": "ロボット: うちの学校の先生が退職するって話、知ってた？<br>ロボット: Do you know the teacher at our school is going to retire?<br><br>学習者: 僕も昨日知ったんだ。聞いてびっくりしたよ。<br>学習者: I knew that yesterday too. I was (　　　) to hear that.",
+        "ex": 0,
+        "unit": "受動態"
+    }
+]

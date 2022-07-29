@@ -3,12 +3,25 @@ const http = require("http");
 const fs = require("fs");
 const server = http.createServer();
 const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
-const arr_len = 4;
+
+const unit_arr = {
+  "3単元": 0,
+  "過去形": 1,
+  "助動詞": 2,
+  "受動態": 3,
+  "現在完了": 4,
+  "現在進行": 5
+};
+
 let syncFlag = false;
-let miss_arr = [];
-let miss_arr2 = [];
-let miss_arr3 = [];
-let miss_arr4 = [];
+let answerFlag = false;
+let tmp;
+let correct_num = [3, 0, 5, 2, 8, 1];
+//let correct_num = [3, 0, 5, 2];
+let correct_arr = [];
+let correct_arr2 = [];
+let correct_arr3 = [];
+let correct_arr4 = [];
 
 //const metaphone = import('metaphone');
 // /* kuroshiro : Japanese Sentence => Hiragana, Katakana or Romaji */
@@ -19,15 +32,13 @@ kuroshiro.init(new KuromojiAnalyzer());
 
 const strComparer = require('./modules/string-comparer');
 
-for(let i = 0;i < arr_len; i++){
-  miss_arr[i] = 0; //1が正解、0が不正解
-  miss_arr2[i] = 0;
-  miss_arr3[i] = 0;
-  for(let j = 0;j < arr_len*3; j = j+3){
-    miss_arr4[j] = 0;
-    miss_arr4[j+1] = 0;
-    miss_arr4[j+2] = 0;
-  }
+for(let i = 0;i < correct_num.length; i++){
+  correct_arr[i] = 0; //1が正解、0が不正解
+  correct_arr2[i] = 0;
+  correct_arr3[i] = 0;
+  correct_arr4[3*i] = 0;
+  correct_arr4[3*i+1] = 0;
+  correct_arr4[3*i+2] = 0;
 } 
 
 server.on("request", getJs);
@@ -38,6 +49,27 @@ function getJs(req, res) {
   console.log(url);
   switch(url){
   case "/":
+    fs.readFile("./top.html", "UTF-8", function (err, data) {
+      res.writeHead(200, {"Content-Type": "text/html"});
+      res.write(data);
+      res.end();
+    });
+    break;
+  case "/writing_top":
+    fs.readFile("./writing_top.html", "UTF-8", function (err, data) {
+      res.writeHead(200, {"Content-Type": "text/html"});
+      res.write(data);
+      res.end();
+    });
+    break;
+  case "/writing":
+    fs.readFile("./writing.html", "UTF-8", function (err, data) {
+      res.writeHead(200, {"Content-Type": "text/html"});
+      res.write(data);
+      res.end();
+    });
+    break;
+  case "/index":
     fs.readFile("./index.html", "UTF-8", function (err, data) {
       res.writeHead(200, {"Content-Type": "text/html"});
       res.write(data);
@@ -117,8 +149,11 @@ const recognizeSync = (lc) => {
 var io = socketio(server);
 
 io.sockets.on('connection', function (socket) {
+  socket.on('WRITING_TO_SERVER', () => {
+    startSpeaking("pre-writing_test");
+  });
   socket.on('SPEAKING_TO_SERVER', () => {
-    startSpeaking("first");
+    startSpeaking("pre-speaking_test");
   });
   socket.on('SPEAKING_TO_SERVER2', () => {
     startSpeaking("second");
@@ -131,6 +166,11 @@ io.sockets.on('connection', function (socket) {
   });
   socket.on('SPOKE', () => {
     syncFlag = true;
+  });
+  socket.on('ANSWERED', (text) => {
+    answerFlag = true;
+    console.log(text);
+    tmp = text;
   });
   
     socket.on('client_to_server', function (data) {
@@ -146,11 +186,14 @@ async function voiceRec(language){
 
 async function startSpeaking(mode){
   switch (mode) {
-    case "first":
-      //await doJsonCommands("./data/script.json");
-      await firstInteraction();
+    case "pre-writing_test":
+      await pre_writingTest();
+      break;
+    case "pre-speaking_test":
+      await pre_speakingTest();
       break;
     case "second":
+      await doJsonCommands("./data/script.json");
       await secondInteraction();
       break;
     case "third":
@@ -181,47 +224,79 @@ function speakScript(lang, msg) {
   });
 }
 
-async function firstInteraction(){
-  const jsonObject = JSON.parse(fs.readFileSync("./data/first_interaction.json", "utf-8"));
+function answerCheck() {
+  return new Promise((resolve) => {
+    let checkFlagDemon = setInterval(() => {
+      if(answerFlag == true){
+        answerFlag = false;
+        clearInterval(checkFlagDemon);
+        resolve();
+      }
+    }, 500);
+  });
+}
+
+async function pre_writingTest(){
+  const jsonObject = JSON.parse(fs.readFileSync("./data/pre-writing_test.json", "utf-8"));
+  for (const obj of jsonObject) {
+    io.emit("DISPLAY_SENTENCES", obj.txt);
+    await answerCheck();
+    //console.log(tmp); // for debug
+    if(obj.key == tmp) correct_num[unit_arr[obj.unit]]++;
+    console.log(correct_num);
+  }
+  io.emit("BACK_TO_TOPPAGE");
+}
+
+async function pre_speakingTest(){
+  const jsonObject = JSON.parse(fs.readFileSync("./data/pre-speaking_test.json", "utf-8"));
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
   for (const obj of jsonObject) { 
     io.emit("DISPLAY_SCRIPTS", obj.txt);
-    if(count != 0) await speakScript("Japanese", "次の会話文に行くね");
+    //if(count != 0) await speakScript("Japanese", "次の会話文に行くね");
     if(obj.ex == 0){
       await sleep(3000);
       await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
       const result = await voiceRec('en-US');
       const words = result.split(" ");
       for(const data of words){
-        if(data === obj.key) miss_arr[count] = 1;
+        if(data === obj.key) correct_num[unit_arr[obj.unit]]++;
       }
     }else if(obj.ex == 1){
       const result = await voiceRec('en-US');
       const words = result.split(" ");
       for(const data of words){
-        if(data === obj.key) miss_arr[count] = 1;
+        if(data === obj.key) correct_num[unit_arr[obj.unit]]++;
       }
       await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
     }
     count++;
-    console.log("miss_arr:" + miss_arr); //for debug
+    console.log("correct_num:" + correct_num); //for debug
     await sleep(3000);
   }
-  await speakScript("Japanese", "お疲れさま、最初のインタラクションは終わりだよ。");
+
+  let tmp_for_sort = correct_num.concat(); //array copy
+  let median;
+  tmp_for_sort.sort();
+  median = tmp_for_sort[tmp_for_sort.length/2];
+  for(let i = 0;i < correct_arr.length; i++){
+    if(correct_num[i] >= median) correct_arr[i] = 1;
+  }
+
+  console.log("correct_num:" + correct_num); //for debug
+  console.log("correct_arr:" + correct_arr); //for debug
   io.emit("DISPLAY_SCRIPTS_BLANK");
+  io.emit("BACK_TO_TOPPAGE");
 }
 
 async function secondInteraction(){
-  await speakScript("Japanese", "２回目のインタラクションを始めるよ。");
-  await speakScript("Japanese", "このインタラクションでは、さっきと同じように空欄になっている文を君に話してもらいたいな");
-  await speakScript("Japanese", "それじゃあ始めるよ");
   const jsonObject = JSON.parse(fs.readFileSync("./data/second_interaction.json", "utf-8"));
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
   let correctFlag = 0;
-  // miss_arr = [0,1,0,1]; //for debug
-  console.log("miss_arr:" + miss_arr); //for debug
+  correct_arr = [0,1,0,1]; //for debug
+  console.log("correct_arr:" + correct_arr); //for debug
   for (const obj of jsonObject) {
     io.emit("DISPLAY_SCRIPTS", obj.txt);
     if(count != 0) await speakScript("Japanese", "次に行くよ");
@@ -243,14 +318,14 @@ async function secondInteraction(){
     }
     await sleep(3000);
     if(correctFlag == 0){
-      if(miss_arr[count] == 1){
+      if(correct_arr[count] == 1){
         await speakScript("Japanese", "間違えて発話していたよ。");
         await speakScript("Japanese", "正しい発話はこんな感じだよ。");
         io.emit("DISPLAY_ANSWER", obj.correctText);
         await speakScript(obj.lang, "\\rspd=70\\" + obj.practiceText);
         await sleep(5000);
         io.emit("DISPLAY_ANSWER_BLANK");
-      }else if(miss_arr[count] == 0){
+      }else if(correct_arr[count] == 0){
         await speakScript("Japanese", "間違えて発話していたよ。");
         await speakScript("Japanese", "正しい発話はこんな感じだよ。");
         io.emit("DISPLAY_ANSWER", obj.correctText);
@@ -266,30 +341,31 @@ async function secondInteraction(){
     }else if(correctFlag == 1){
       await speakScript("Japanese", "良くできていたね。この調子で頑張ろう。");
       correctFlag = 0;
-      miss_arr2[count] = 1;
+      correct_arr2[count] = 1;
     }
-    console.log("miss_arr2:" + miss_arr2); //for debug
+    console.log("correct_arr2:" + correct_arr2); //for debug
     count++;
   }
-  await speakScript("Japanese", "お疲れさま、2回目のインタラクションは終わりだよ。");
+  await speakScript("Japanese", "お疲れさま、最初のインタラクションは終わりだよ。");
   io.emit("DISPLAY_SCRIPTS_BLANK");
+  io.emit("BACK_TO_TOPPAGE");
 }
 
 async function thirdInteraction(){
-  await speakScript("Japanese", "それじゃあ3回目のインタラクションを始めるよ。");
+  await speakScript("Japanese", "それじゃあ2回目のインタラクションを始めるよ。");
   await speakScript("Japanese", "このインタラクションでは、僕が空欄部分を話すからもし間違えていたら、教えてほしいな");
   await speakScript("Japanese", "それじゃあ始めるよ");
   const jsonObject = JSON.parse(fs.readFileSync("./data/third_interaction.json", "utf-8"));
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
   let correctFlag = 0;
-  // miss_arr = [0,1,0,1]; //for debug
-  // miss_arr2 = [1,0,0,1]; //for debug
-  console.log("miss_arr:" + miss_arr); //for debug
-  console.log("miss_arr2:" + miss_arr2); //for debug
+  // correct_arr = [0,1,0,1]; //for debug
+  // correct_arr2 = [1,0,0,1]; //for debug
+  console.log("correct_arr:" + correct_arr); //for debug
+  console.log("correct_arr2:" + correct_arr2); //for debug
   for (const obj of jsonObject) {
     io.emit("DISPLAY_SCRIPTS", obj.txt);
-    if(count != 0) await speakScript("Japanese", "次に行くね");
+    if(count != 0) await speakScript("Japanese", "それじゃあ次に行くね");
     if(obj.ex == 0){
       await voiceRec('en-US');
       await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
@@ -317,7 +393,7 @@ async function thirdInteraction(){
       }
       if(correctFlag == 1){
         correctFlag = 0;
-        miss_arr3[count] = 1;
+        correct_arr3[count] = 1;
       }else if(correctFlag == 0){
         await sleep(3000);
         await speakScript("Japanese", "あれ、答えが画面に出てるみたいだよ");
@@ -331,7 +407,7 @@ async function thirdInteraction(){
     }else{
       await speakScript("Japanese", "間違いはなかったんだね、わかったよ。");
       if(obj.correct == 1){
-        miss_arr3[count] = 1;
+        correct_arr3[count] = 1;
       }else if(obj.correct == 0){
         await sleep(3000);
         await speakScript("Japanese", "あれ、答えが画面に出てるみたいだよ");
@@ -343,11 +419,12 @@ async function thirdInteraction(){
         io.emit("DISPLAY_ANSWER_BLANK");
       }
     }
-    console.log("miss_arr3:" + miss_arr3); //for debug
+    console.log("correct_arr3:" + correct_arr3); //for debug
     count++;
   }
-  await speakScript("Japanese", "お疲れさま、これで3回目のインタラクションは終わりだよ。");
+  await speakScript("Japanese", "お疲れさま、これで2回目のインタラクションは終わりだよ。");
   io.emit("DISPLAY_SCRIPTS_BLANK");
+  io.emit("BACK_TO_TOPPAGE");
 } 
 
 async function test(){
@@ -368,21 +445,22 @@ async function test(){
       const result = await voiceRec('en-US');
       const words = result.split(" ");
       for(const data of words){
-        if(data === obj.key) miss_arr4[count] = 1;
+        if(data === obj.key) correct_arr4[count] = 1;
       }
     }else if(obj.ex == 1){
       const result = await voiceRec('en-US');
       const words = result.split(" ");
       for(const data of words){
-        if(data === obj.key) miss_arr4[count] = 1;
+        if(data === obj.key) correct_arr4[count] = 1;
       }
       await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
     }
     count++;
-    console.log("miss_arr4:" + miss_arr4); //for debug
+    console.log("correct_arr4:" + correct_arr4); //for debug
     await sleep(3000);
   }
   await speakScript("Japanese", "お疲れさま、これで4回目のインタラクションは終わりだよ。");
   await speakScript("Japanese", "一緒に話してくれてありがとう！");
   io.emit("DISPLAY_SCRIPTS_BLANK");
+  io.emit("BACK_TO_TOPPAGE");
 }
