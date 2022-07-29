@@ -49,42 +49,56 @@ function getJs(req, res) {
   console.log(url);
   switch(url){
   case "/":
-    fs.readFile("./top.html", "UTF-8", function (err, data) {
+    fs.readFile("./html/top.html", "UTF-8", function (err, data) {
       res.writeHead(200, {"Content-Type": "text/html"});
       res.write(data);
       res.end();
     });
     break;
   case "/writing_top":
-    fs.readFile("./writing_top.html", "UTF-8", function (err, data) {
+    fs.readFile("./html/writing_top.html", "UTF-8", function (err, data) {
       res.writeHead(200, {"Content-Type": "text/html"});
       res.write(data);
       res.end();
     });
     break;
   case "/writing":
-    fs.readFile("./writing.html", "UTF-8", function (err, data) {
+    fs.readFile("./html/writing.html", "UTF-8", function (err, data) {
       res.writeHead(200, {"Content-Type": "text/html"});
       res.write(data);
       res.end();
     });
     break;
-  case "/index":
-    fs.readFile("./index.html", "UTF-8", function (err, data) {
+  case "/js/writing.js":
+    fs.readFile("./js/writing.js", "UTF-8", function (err, data) {
+      res.writeHead(200, {"Content-Type": "text/plain"});
+      res.write(data); 
+      res.end();
+    });
+    break; 
+  case "/speaking_top":
+    fs.readFile("./html/speaking_top.html", "UTF-8", function (err, data) {
       res.writeHead(200, {"Content-Type": "text/html"});
       res.write(data);
       res.end();
     });
     break;
-  case "/js/index.js":
-    fs.readFile("./js/index.js", "UTF-8", function (err, data) {
+  case "/speaking":
+    fs.readFile("./html/speaking.html", "UTF-8", function (err, data) {
+      res.writeHead(200, {"Content-Type": "text/html"});
+      res.write(data);
+      res.end();
+    });
+    break;
+  case "/js/speaking.js":
+    fs.readFile("./js/speaking.js", "UTF-8", function (err, data) {
       res.writeHead(200, {"Content-Type": "text/plain"});
       res.write(data); 
       res.end();
     });
     break;
-  case "/css/index.css":
-    fs.readFile("./css/index.css", "UTF-8", function (err, data) {
+  case "/css/speaking.css":
+    fs.readFile("./css/speaking.css", "UTF-8", function (err, data) {
       res.writeHead(200, {"Content-Type": "text/css"});
       res.write(data); 
       res.end();
