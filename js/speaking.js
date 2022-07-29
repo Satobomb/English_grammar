@@ -11,10 +11,6 @@ let serviceDirectory;
 socket.on("SPEAKING_TO_CLIENT", (lang, msg) => {
     speech(lang, msg);
 });
-socket.on("DISPLAY_SENTENCES", (text) => {
-    $('#sentences').html('');
-    $('#sentences').html(text);
-});
 socket.on("DISPLAY_SCRIPTS", (text) => {
     $('#scripts').html('');
     $('#scripts').html(text);
@@ -37,9 +33,6 @@ socket.on("BACK_TO_TOPPAGE", () => {
 
 function start(mode){
     switch (mode){
-        case "pre-writing_test":
-            socket.emit("WRITING_TO_SERVER");
-            break;
         case "pre-speaking_test":
             socket.emit("SPEAKING_TO_SERVER");
             break;
@@ -53,12 +46,6 @@ function start(mode){
             socket.emit("SPEAKING_TO_SERVER4");
             break;
     }
-}
-
-function clickButton(){
-    const text = document.form.textBox.value;
-    document.form.textBox.value = "";
-    socket.emit('ANSWERED', (text));
 }
 
 //↓Naoを動かす用
