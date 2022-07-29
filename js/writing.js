@@ -19,8 +19,15 @@ socket.on("BACK_TO_TOPPAGE", () => {
 
 
 
-function pre_writingStart(){
-    socket.emit("WRITING_TO_SERVER");
+function start(mode){
+    switch (mode){
+        case "pre-writing_test":
+            socket.emit("WRITING_TO_SERVER", "pre");
+            break;
+        case "post-writing_test":
+            socket.emit("WRITING_TO_SERVER", "post");
+            break;
+    }
 }
 
 function clickButton(){

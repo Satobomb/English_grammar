@@ -15,7 +15,7 @@ const unit_arr = {
 
 let syncFlag = false;
 let answerFlag = false;
-let tmp;
+let answer;
 let correct_num = [3, 0, 5, 2, 8, 1];
 //let correct_num = [3, 0, 5, 2];
 let correct_arr = [];
@@ -49,7 +49,7 @@ function getJs(req, res) {
   console.log(url);
   switch(url){
   case "/":
-    fs.readFile("./html/top.html", "UTF-8", function (err, data) {
+    fs.readFile("./html/index.html", "UTF-8", function (err, data) {
       res.writeHead(200, {"Content-Type": "text/html"});
       res.write(data);
       res.end();
@@ -90,15 +90,29 @@ function getJs(req, res) {
       res.end();
     });
     break;
-  case "/js/speaking.js":
-    fs.readFile("./js/speaking.js", "UTF-8", function (err, data) {
+  case "/interaction_top":
+    fs.readFile("./html/interaction_top.html", "UTF-8", function (err, data) {
+      res.writeHead(200, {"Content-Type": "text/html"});
+      res.write(data);
+      res.end();
+    });
+    break;
+  case "/interaction":
+    fs.readFile("./html/interaction.html", "UTF-8", function (err, data) {
+      res.writeHead(200, {"Content-Type": "text/html"});
+      res.write(data);
+      res.end();
+    });
+    break;
+  case "/js/interaction.js":
+    fs.readFile("./js/interaction.js", "UTF-8", function (err, data) {
       res.writeHead(200, {"Content-Type": "text/plain"});
       res.write(data); 
       res.end();
     });
     break;
-  case "/css/speaking.css":
-    fs.readFile("./css/speaking.css", "UTF-8", function (err, data) {
+  case "/css/interaction.css":
+    fs.readFile("./css/interaction.css", "UTF-8", function (err, data) {
       res.writeHead(200, {"Content-Type": "text/css"});
       res.write(data); 
       res.end();
@@ -163,20 +177,17 @@ const recognizeSync = (lc) => {
 var io = socketio(server);
 
 io.sockets.on('connection', function (socket) {
-  socket.on('WRITING_TO_SERVER', () => {
-    startSpeaking("pre-writing_test");
+  socket.on('WRITING_TO_SERVER', (mode) => {
+    if     (mode === "pre")  startSpeaking("pre-writing_test");
+    else if(mode === "post") startSpeaking("post-writing_test");
   });
-  socket.on('SPEAKING_TO_SERVER', () => {
-    startSpeaking("pre-speaking_test");
+  socket.on('SPEAKING_TO_SERVER', (mode) => {
+    if     (mode === "pre")  startSpeaking("pre-speaking_test");
+    else if(mode === "post") startSpeaking("post-speaking_test");
   });
-  socket.on('SPEAKING_TO_SERVER2', () => {
-    startSpeaking("second");
-  });
-  socket.on('SPEAKING_TO_SERVER3', () => {
-    startSpeaking("third");
-  });
-  socket.on('SPEAKING_TO_SERVER4', () => {
-    startSpeaking("test");
+  socket.on('INTERACTION_TO_SERVER', (mode) => {
+    if     (mode === "first")  startSpeaking("first");
+    else if(mode === "second") startSpeaking("second");
   });
   socket.on('SPOKE', () => {
     syncFlag = true;
@@ -184,12 +195,11 @@ io.sockets.on('connection', function (socket) {
   socket.on('ANSWERED', (text) => {
     answerFlag = true;
     console.log(text);
-    tmp = text;
+    answer = text;
   });
-  
-    socket.on('client_to_server', function (data) {
-        io.sockets.emit('server_to_client', { value: data.value });
-    });
+  socket.on('client_to_server', function (data) {
+      io.sockets.emit('server_to_client', { value: data.value });
+  });
 });
 
 async function voiceRec(language){
@@ -203,19 +213,23 @@ async function startSpeaking(mode){
     case "pre-writing_test":
       await pre_writingTest();
       break;
+    case "post-writing_test":
+      await post_writingTest();
+      break;
     case "pre-speaking_test":
       await pre_speakingTest();
       break;
+    case "post-speaking_test":
+      await post_speakingTest();
+      break;
+    case "first":
+      //await doJsonCommands("./data/script.json");
+      await firstInteraction();
+      break;
     case "second":
-      await doJsonCommands("./data/script.json");
       await secondInteraction();
       break;
-    case "third":
-      await thirdInteraction();
-      break;
-    case "test":
-      await test();
-      break;
+    
   }
 }
 
@@ -255,12 +269,15 @@ async function pre_writingTest(){
   for (const obj of jsonObject) {
     io.emit("DISPLAY_SENTENCES", obj.txt);
     await answerCheck();
-    //console.log(tmp); // for debug
-    if(obj.key == tmp) correct_num[unit_arr[obj.unit]]++;
-    console.log(correct_num);
+    //console.log(answer); // for debug
+    if(obj.key == answer) correct_num[unit_arr[obj.unit]]++;
+    console.log(correct_num); //for debug
   }
+  console.log("事前筆記テスト終了時 : " + correct_num);
   io.emit("BACK_TO_TOPPAGE");
 }
+
+async function post_writingTest(){}
 
 async function pre_speakingTest(){
   const jsonObject = JSON.parse(fs.readFileSync("./data/pre-speaking_test.json", "utf-8"));
@@ -298,13 +315,13 @@ async function pre_speakingTest(){
     if(correct_num[i] >= median) correct_arr[i] = 1;
   }
 
-  console.log("correct_num:" + correct_num); //for debug
+  console.log("事前発話テスト終了時 : " + correct_num); //for debug
   console.log("correct_arr:" + correct_arr); //for debug
   io.emit("DISPLAY_SCRIPTS_BLANK");
   io.emit("BACK_TO_TOPPAGE");
 }
 
-async function secondInteraction(){
+async function firstInteraction(){
   const jsonObject = JSON.parse(fs.readFileSync("./data/second_interaction.json", "utf-8"));
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
@@ -365,7 +382,7 @@ async function secondInteraction(){
   io.emit("BACK_TO_TOPPAGE");
 }
 
-async function thirdInteraction(){
+async function secondInteraction(){
   await speakScript("Japanese", "それじゃあ2回目のインタラクションを始めるよ。");
   await speakScript("Japanese", "このインタラクションでは、僕が空欄部分を話すからもし間違えていたら、教えてほしいな");
   await speakScript("Japanese", "それじゃあ始めるよ");
@@ -441,7 +458,7 @@ async function thirdInteraction(){
   io.emit("BACK_TO_TOPPAGE");
 } 
 
-async function test(){
+async function post_speakingTest(){
   await speakScript("Japanese", "最後に4回目のインタラクションを始めるよ");
   await speakScript("Japanese", "このインタラクションでは、空欄になっている文を君に話してもらいたいな");
   await speakScript("Japanese", "それじゃあ始めるよ");
