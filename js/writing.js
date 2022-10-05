@@ -21,12 +21,12 @@ socket.on("BACK_TO_TOPPAGE", () => {
 
 function start(mode){
     switch (mode){
-        case "pre-writing_test":
-            socket.emit("WRITING_TO_SERVER", "pre");
+        case "writing_test":
+            socket.emit("WRITING_TO_SERVER");
             break;
-        case "post-writing_test":
-            socket.emit("WRITING_TO_SERVER", "post");
-            break;
+        // case "post-writing_test":
+        //     socket.emit("WRITING_TO_SERVER", "post");
+        //     break;
     }
 }
 
