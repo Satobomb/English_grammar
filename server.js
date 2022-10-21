@@ -91,6 +91,13 @@ function getJs(req, res) {
       res.end();
     });
     break;
+  case "/js/speaking.js":
+  fs.readFile("./js/speaking.js", "UTF-8", function (err, data) {
+    res.writeHead(200, {"Content-Type": "text/plain"});
+    res.write(data); 
+    res.end();
+  });
+  break; 
   case "/interaction_top":
     fs.readFile("./html/interaction_top.html", "UTF-8", function (err, data) {
       res.writeHead(200, {"Content-Type": "text/html"});
@@ -126,12 +133,20 @@ function getJs(req, res) {
       res.end();
     });
     break;
+  case "/html/1.mp4":
+    fs.readFile("./html/1.mp4", "UTF-8", function (err, data) {
+      res.writeHead(200, {"Content-Type": "video/mp4"});
+      res.write(data); 
+      res.end();
+    });
+    break;  
    } 
 }
 
-//音声認識
-const recorder = require('node-record-lpcm16'); //soxをNode.jsから使うためのモジュール
-const speech = require('@google-cloud/speech'); //Cloud Speech-to-text APIを使うためのモジュール
+//soxをNode.jsから使うためのモジュール
+const recorder = require('node-record-lpcm16'); 
+//Cloud Speech-to-text APIを使うためのモジュール
+const speech = require('@google-cloud/speech'); 
 const client = new speech.SpeechClient();
 
 const recorderConfig = {
@@ -300,7 +315,7 @@ async function pre_speakingTest(){
     //if(count != 0) await speakScript("Japanese", "次の会話文に行くね");
     if(obj.ex == 0){
       await sleep(3000);
-      await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
+      //await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
       const result = await voiceRec('en-US');
       const words = result.split(" ");
       for(const data of words){
@@ -312,7 +327,7 @@ async function pre_speakingTest(){
       for(const data of words){
         if(data === obj.key) correct_num[unit_arr[obj.unit]]++;
       }
-      await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
+      //await speakScript(obj.lang, "\\rspd=90\\" + obj.msg);
     }
     count++;
     console.log("correct_num:" + correct_num); //for debug
