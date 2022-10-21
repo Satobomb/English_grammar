@@ -134,14 +134,14 @@ function getJs(req, res) {
     });
     break;
   case "/html/1.mp4":
-    fs.readFile("./html/1.mp4", function (err, data) {
-      res.writeHead(200, {"Content-Type": "video/mp4"});
-      res.write(data); 
-      res.end();
-    });
-    // const data = fs.readFileSync("./html/1.mp4");
-    // res.write(data);
-    // res.end();
+    // fs.readFile("./html/1.mp4", function (err, data) {
+    //   res.writeHead(200, {"Content-Type": "video/mp4"});
+    //   res.write(data); 
+    //   res.end();
+    // });
+    const data = fs.readFileSync("./html/1.mp4");
+    res.write(data);
+    res.end();
     break;  
    } 
 }
