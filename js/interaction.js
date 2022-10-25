@@ -29,8 +29,6 @@ socket.on("BACK_TO_TOPPAGE", () => {
     location.href = "/";
 });
 
-
-
 function start(mode){
     switch (mode){
         case "first":
@@ -48,8 +46,7 @@ function start(mode){
     }
 }
 
-//↓Naoを動かす用
-
+//Naoを動かす用
 let session = new QiSession("192.168.1.36:80");
     session.socket().on('connect', function () {
         console.log('QiSession connected!');
@@ -59,15 +56,16 @@ let session = new QiSession("192.168.1.36:80");
     });
 
 session.service("ALTextToSpeech").done((tts) => {
-    _tts = tts;   
-    _tts.getLanguage().done(function (lang) { //言語の取得
+    _tts = tts;
+    //言語の取得   
+    _tts.getLanguage().done(function (lang) { 
         //console.log("language is " + lang + " now");
         _lang = lang;
     }).fail(function (error) {
         console.log("An error occurred: " + error);
     });
-    
-    _tts.getVolume().done(function (vol) { //音量の取得
+    //音量の取得
+    _tts.getVolume().done(function (vol) { 
         console.log("volume is " + vol + " now");
         _vol = vol;
     }).fail(function (error) {

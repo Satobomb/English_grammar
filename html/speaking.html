@@ -8,7 +8,7 @@
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-    <title>実験</title>
+    <title>発話テスト</title>
 
 </head>
 <body>
@@ -23,12 +23,14 @@
         <h2></h2>
     </div>
 
-    <video id="video" src="/html/1.mp4" controls="controls">
+    <video id="video" src="/movie/1.mp4" controls="controls">
         <p>ご使用のブラウザでは動画再生に対応していません</p>
     </video>
+    <br>
+    <input type="button" value="開始" onclick="start()">
     <input type="button" value="再生" onclick="play()">
     <input type="button" value="一時停止" onclick="pause()">
-
+    <br>
     <a href="/" style="position: absolute; bottom: 0;">Back to top page</a>
 
     <script type="text/javascript" src="../js/speaking.js"></script> 
