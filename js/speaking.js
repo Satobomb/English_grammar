@@ -20,6 +20,9 @@ v.addEventListener('timeupdate', function() {
         case 3:
             if(v.currentTime >= 7){ v.pause(); count++; }
             break;
+        case 4:
+            if(v.currentTime >= 9){ v.pause(); count++; }
+        break;
     }
     //デバッグ用
 	console.log(v.currentTime);

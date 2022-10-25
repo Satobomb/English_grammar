@@ -3,7 +3,7 @@ const http = require("http");
 const fs = require("fs");
 const server = http.createServer();
 const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
-
+const strComparer = require('./modules/string-comparer');
 const unit_arr = {
   "3単元": 0,
   "過去形": 1,
@@ -13,34 +13,81 @@ const unit_arr = {
   "現在進行": 5
 };
 
+class Array {
+
+  constructor(correct_num, correct_arr){
+    this.correct_num = correct_num;
+    this.correct_arr = correct_arr;
+  }
+
+  async pre_writingTest(){
+    const jsonObject = JSON.parse(fs.readFileSync("./data/pre-writing_test.json", "utf-8"));
+    for (const obj of jsonObject) {
+      io.emit("DISPLAY_SENTENCES", obj.txt);
+      await answerCheck();
+      if(obj.key == answer) this.correct_num[unit_arr[obj.unit]]++;
+      console.log(this.correct_num); //for debug
+    }
+    console.log("事前筆記テスト終了時 : " + this.correct_num);
+    io.emit("BACK_TO_TOPPAGE");
+  }
+
+  async pre_speakingTest(){
+    const jsonObject = JSON.parse(fs.readFileSync("./data/pre-speaking_test.json", "utf-8"));
+    io.emit("DISPLAY_ANSWER_BLANK");
+    let count = 0;
+    for (const obj of jsonObject) { 
+      io.emit("DISPLAY_SCRIPTS", obj.txt);
+      await io.emit("SPEAKING_TEST");
+      const result = await voiceRec('en-US');
+      const words = result.split(" ");
+      for(const data of words){
+        if(data === obj.key) this.correct_num[unit_arr[obj.unit]]++;
+      }
+      count++;
+      console.log("correct_num:" + this.correct_num); //for debug
+    }
+    //得意・不得意単元の振り分け(中心より下は不得意・上は得意)
+    let tmp_for_sort = this.correct_num.concat(); //array copy
+    let median;
+    tmp_for_sort.sort();
+    median = tmp_for_sort[tmp_for_sort.length/2];
+    for(let i = 0;i < this.correct_arr.length; i++){
+      if(this.correct_num[i] >= median) this.correct_arr[i] = 1;
+    }
+  
+    console.log("事前発話テスト終了時 : " + this.correct_num); //for debug
+    console.log("得意・不得意 : " + this.correct_arr); //for debug
+    io.emit("DISPLAY_SCRIPTS_BLANK");
+    io.emit("BACK_TO_TOPPAGE");
+  }
+}
+
+let array = new Array([3, 0, 5, 2, 8, 1], []);
 let syncFlag = false;
 let answerFlag = false;
 let doneFlag = false;
 let answer;
-let correct_num = [3, 0, 5, 2, 8, 1];
-//let correct_num = [3, 0, 5, 2];
+//let correct_num = [3, 0, 5, 2, 8, 1];
 let correct_arr = [];
 let correct_arr2 = [];
 let correct_arr3 = [];
 let correct_arr4 = [];
 
-//const metaphone = import('metaphone');
 // /* kuroshiro : Japanese Sentence => Hiragana, Katakana or Romaji */
 const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
 const Kuroshiro = require('kuroshiro');
 const kuroshiro = new Kuroshiro();
 kuroshiro.init(new KuromojiAnalyzer());
 
-const strComparer = require('./modules/string-comparer');
-
-for(let i = 0;i < correct_num.length; i++){
-  correct_arr[i] = 0; //1が正解、0が不正解
-  correct_arr2[i] = 0;
-  correct_arr3[i] = 0;
-  correct_arr4[3*i] = 0;
-  correct_arr4[3*i+1] = 0;
-  correct_arr4[3*i+2] = 0;
-} 
+// for(let i = 0;i < correct_num.length; i++){
+//   correct_arr[i] = 0; //1が正解、0が不正解
+//   correct_arr2[i] = 0;
+//   correct_arr3[i] = 0;
+//   correct_arr4[3*i] = 0;
+//   correct_arr4[3*i+1] = 0;
+//   correct_arr4[3*i+2] = 0;
+// } 
 
 server.on("request", getJs);
 server.listen(8080);
@@ -227,13 +274,13 @@ async function voiceRec(language){
 async function startSpeaking(mode){
   switch (mode) {
     case "pre-writing_test":
-      await pre_writingTest();
+      await array.pre_writingTest();
       break;
     case "post-writing_test":
       await post_writingTest();
       break;
     case "pre-speaking_test":
-      await pre_speakingTest();
+      await array.pre_speakingTest();
       break;
     case "post-speaking_test":
       await post_speakingTest();
@@ -279,61 +326,49 @@ function answerCheck() {
   });
 }
 
-async function pre_writingTest(){
-  const jsonObject = JSON.parse(fs.readFileSync("./data/pre-writing_test.json", "utf-8"));
-  for (const obj of jsonObject) {
-    io.emit("DISPLAY_SENTENCES", obj.txt);
-    await answerCheck();
-    //console.log(answer); // for debug
-    if(obj.key == answer) correct_num[unit_arr[obj.unit]]++;
-    console.log(correct_num); //for debug
-  }
-  console.log("事前筆記テスト終了時 : " + correct_num);
-  io.emit("BACK_TO_TOPPAGE");
-}
-
 async function post_writingTest(){
   const jsonObject = JSON.parse(fs.readFileSync("./data/post-writing_test.json", "utf-8"));
   for (const obj of jsonObject) {
     io.emit("DISPLAY_SENTENCES", obj.txt);
     await answerCheck();
     //console.log(answer); // for debug
-    if(obj.key == answer) correct_num[unit_arr[obj.unit]]++;
-    console.log(correct_num); //for debug
+    if(obj.key == answer) array.correct_num[unit_arr[obj.unit]]++;
+    console.log(array.correct_num); //for debug
   }
-  console.log("事後筆記テスト終了時 : " + correct_num);
+  console.log("事後筆記テスト終了時 : " + array.correct_num);
   io.emit("BACK_TO_TOPPAGE");
 }
 
-async function pre_speakingTest(){
-  const jsonObject = JSON.parse(fs.readFileSync("./data/pre-speaking_test.json", "utf-8"));
-  io.emit("DISPLAY_ANSWER_BLANK");
-  let count = 0;
-  for (const obj of jsonObject) { 
-    io.emit("DISPLAY_SCRIPTS", obj.txt);
-    await io.emit("SPEAKING_TEST");
-    const result = await voiceRec('en-US');
-    const words = result.split(" ");
-    for(const data of words){
-      if(data === obj.key) correct_num[unit_arr[obj.unit]]++;
-    }
-    count++;
-    console.log("correct_num:" + correct_num); //for debug
-  }
+//発話テスト
+// async function pre_speakingTest(){
+//   const jsonObject = JSON.parse(fs.readFileSync("./data/pre-speaking_test.json", "utf-8"));
+//   io.emit("DISPLAY_ANSWER_BLANK");
+//   let count = 0;
+//   for (const obj of jsonObject) { 
+//     io.emit("DISPLAY_SCRIPTS", obj.txt);
+//     await io.emit("SPEAKING_TEST");
+//     const result = await voiceRec('en-US');
+//     const words = result.split(" ");
+//     for(const data of words){
+//       if(data === obj.key) array.correct_num[unit_arr[obj.unit]]++;
+//     }
+//     count++;
+//     console.log("correct_num:" + array.correct_num); //for debug
+//   }
+//   //得意・不得意単元の振り分け(中心より下は不得意・上は得意)
+//   let tmp_for_sort = array.correct_num.concat(); //array copy
+//   let median;
+//   tmp_for_sort.sort();
+//   median = tmp_for_sort[tmp_for_sort.length/2];
+//   for(let i = 0;i < correct_arr.length; i++){
+//     if(array.correct_num[i] >= median) correct_arr[i] = 1;
+//   }
 
-  let tmp_for_sort = correct_num.concat(); //array copy
-  let median;
-  tmp_for_sort.sort();
-  median = tmp_for_sort[tmp_for_sort.length/2];
-  for(let i = 0;i < correct_arr.length; i++){
-    if(correct_num[i] >= median) correct_arr[i] = 1;
-  }
-
-  console.log("事前発話テスト終了時 : " + correct_num); //for debug
-  console.log("correct_arr:" + correct_arr); //for debug
-  io.emit("DISPLAY_SCRIPTS_BLANK");
-  io.emit("BACK_TO_TOPPAGE");
-}
+//   console.log("事前発話テスト終了時 : " + array.correct_num); //for debug
+//   console.log("得意・不得意 : " + correct_arr); //for debug
+//   io.emit("DISPLAY_SCRIPTS_BLANK");
+//   io.emit("BACK_TO_TOPPAGE");
+// }
 
 async function post_speakingTest(){
   const jsonObject = JSON.parse(fs.readFileSync("./data/pre-speaking_test.json", "utf-8"));
@@ -345,13 +380,14 @@ async function post_speakingTest(){
     const result = await voiceRec('en-US');
     const words = result.split(" ");
     for(const data of words){
-      if(data === obj.key) correct_num[unit_arr[obj.unit]]++;
+      if(data === obj.key) array.correct_num[unit_arr[obj.unit]]++;
     }
     count++;
-    console.log("correct_num:" + correct_num); //for debug
+    console.log("correct_num:" + array.correct_num); //for debug
   }
 }
 
+//インタラクション
 async function firstInteraction(){
   const jsonObject = JSON.parse(fs.readFileSync("./data/second_interaction.json", "utf-8"));
   io.emit("DISPLAY_ANSWER_BLANK");
@@ -442,7 +478,6 @@ async function secondInteraction(){
     const response = await voiceRec('ja-JP');
     const romaji_response = await kuroshiro.convert(response, {to: "romaji"});
     console.log(romaji_response);
-    //const selected = strComparer.selectSimilarWord(romaji_response, ["aru", "nai"]);
     const selected = strComparer.selectSimilarWord(romaji_response, ["machigatteru", "tadashii"]);
     if(selected == "machigatteru"){
       await speakScript("Japanese", "どういう間違いをしていたかな？");
