@@ -13,7 +13,7 @@ const unit_arr = {
   "現在進行": 5
 };
 
-class Array {
+class CorrectArray {
 
   constructor(correct_num, correct_arr){
     this.correct_num = correct_num;
@@ -31,7 +31,6 @@ class Array {
     console.log("事前筆記テスト終了時 : " + this.correct_num);
     io.emit("BACK_TO_TOPPAGE");
   }
-
   async pre_speakingTest(){
     const jsonObject = JSON.parse(fs.readFileSync("./data/pre-speaking_test.json", "utf-8"));
     io.emit("DISPLAY_ANSWER_BLANK");
@@ -56,12 +55,11 @@ class Array {
     }
     console.log("事前発話テスト終了時 : " + this.correct_num); //for debug
     console.log("得意・不得意 : " + this.correct_arr); //for debug
-    io.emit("DISPLAY_SCRIPTS_BLANK");
     io.emit("BACK_TO_TOPPAGE");
   }
 }
 
-let array = new Array([], []);
+let array = new CorrectArray(Array(6).fill(0), Array(6).fill(0));
 let syncFlag = false;
 let answerFlag = false;
 let doneFlag = false;

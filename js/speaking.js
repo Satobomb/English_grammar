@@ -12,16 +12,16 @@ function pause(){ v.pause(); }
 v.addEventListener('timeupdate', function() {
     switch (count) {
         case 1:
-            if(v.currentTime >= 3){ v.pause(); count++; }
+            if(v.currentTime >= 4){ v.pause(); count++; }
             break;
         case 2:
-            if(v.currentTime >= 5){ v.pause(); count++; }
+            if(v.currentTime >= 8){ v.pause(); count++; }
             break;
         case 3:
             if(v.currentTime >= 7){ v.pause(); count++; }
             break;
         case 4:
-            if(v.currentTime >= 9){ v.pause(); count++; }
+            if(v.currentTime >= 11){ v.pause(); count++; }
         break;
     }
     //デバッグ用
@@ -46,4 +46,7 @@ socket.on("DISPLAY_ANSWER", (text) => {
 });
 socket.on("DISPLAY_ANSWER_BLANK", () => {
     $('#answer').html('');
+});
+socket.on("BACK_TO_TOPPAGE", () => {
+    location.href = "/";
 });
