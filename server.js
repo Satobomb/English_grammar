@@ -35,7 +35,6 @@ class Array {
   async pre_speakingTest(){
     const jsonObject = JSON.parse(fs.readFileSync("./data/pre-speaking_test.json", "utf-8"));
     io.emit("DISPLAY_ANSWER_BLANK");
-    let count = 0;
     for (const obj of jsonObject) { 
       io.emit("DISPLAY_SCRIPTS", obj.txt);
       await io.emit("SPEAKING_TEST");
@@ -44,18 +43,17 @@ class Array {
       for(const data of words){
         if(data === obj.key) this.correct_num[unit_arr[obj.unit]]++;
       }
-      count++;
       console.log("correct_num:" + this.correct_num); //for debug
     }
     //得意・不得意単元の振り分け(中心より下は不得意・上は得意)
-    let tmp_for_sort = this.correct_num.concat(); //array copy
+    let tmp_for_sort = (this.correct_num).concat(); //array copy
     let median;
     tmp_for_sort.sort();
     median = tmp_for_sort[tmp_for_sort.length/2];
-    for(let i = 0;i < this.correct_arr.length; i++){
+    for(let i = 0;i < (this.correct_num).length; i++){
       if(this.correct_num[i] >= median) this.correct_arr[i] = 1;
+      else                              this.correct_arr[i] = 0;
     }
-  
     console.log("事前発話テスト終了時 : " + this.correct_num); //for debug
     console.log("得意・不得意 : " + this.correct_arr); //for debug
     io.emit("DISPLAY_SCRIPTS_BLANK");
@@ -63,31 +61,17 @@ class Array {
   }
 }
 
-let array = new Array([3, 0, 5, 2, 8, 1], []);
+let array = new Array([], []);
 let syncFlag = false;
 let answerFlag = false;
 let doneFlag = false;
 let answer;
-//let correct_num = [3, 0, 5, 2, 8, 1];
-let correct_arr = [];
-let correct_arr2 = [];
-let correct_arr3 = [];
-let correct_arr4 = [];
 
 // /* kuroshiro : Japanese Sentence => Hiragana, Katakana or Romaji */
 const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
 const Kuroshiro = require('kuroshiro');
 const kuroshiro = new Kuroshiro();
 kuroshiro.init(new KuromojiAnalyzer());
-
-// for(let i = 0;i < correct_num.length; i++){
-//   correct_arr[i] = 0; //1が正解、0が不正解
-//   correct_arr2[i] = 0;
-//   correct_arr3[i] = 0;
-//   correct_arr4[3*i] = 0;
-//   correct_arr4[3*i+1] = 0;
-//   correct_arr4[3*i+2] = 0;
-// } 
 
 server.on("request", getJs);
 server.listen(8080);
@@ -339,41 +323,9 @@ async function post_writingTest(){
   io.emit("BACK_TO_TOPPAGE");
 }
 
-//発話テスト
-// async function pre_speakingTest(){
-//   const jsonObject = JSON.parse(fs.readFileSync("./data/pre-speaking_test.json", "utf-8"));
-//   io.emit("DISPLAY_ANSWER_BLANK");
-//   let count = 0;
-//   for (const obj of jsonObject) { 
-//     io.emit("DISPLAY_SCRIPTS", obj.txt);
-//     await io.emit("SPEAKING_TEST");
-//     const result = await voiceRec('en-US');
-//     const words = result.split(" ");
-//     for(const data of words){
-//       if(data === obj.key) array.correct_num[unit_arr[obj.unit]]++;
-//     }
-//     count++;
-//     console.log("correct_num:" + array.correct_num); //for debug
-//   }
-//   //得意・不得意単元の振り分け(中心より下は不得意・上は得意)
-//   let tmp_for_sort = array.correct_num.concat(); //array copy
-//   let median;
-//   tmp_for_sort.sort();
-//   median = tmp_for_sort[tmp_for_sort.length/2];
-//   for(let i = 0;i < correct_arr.length; i++){
-//     if(array.correct_num[i] >= median) correct_arr[i] = 1;
-//   }
-
-//   console.log("事前発話テスト終了時 : " + array.correct_num); //for debug
-//   console.log("得意・不得意 : " + correct_arr); //for debug
-//   io.emit("DISPLAY_SCRIPTS_BLANK");
-//   io.emit("BACK_TO_TOPPAGE");
-// }
-
 async function post_speakingTest(){
   const jsonObject = JSON.parse(fs.readFileSync("./data/pre-speaking_test.json", "utf-8"));
   io.emit("DISPLAY_ANSWER_BLANK");
-  let count = 0;
   for (const obj of jsonObject) { 
     io.emit("DISPLAY_SCRIPTS", obj.txt);
     await io.emit("SPEAKING_TEST");
@@ -382,19 +334,19 @@ async function post_speakingTest(){
     for(const data of words){
       if(data === obj.key) array.correct_num[unit_arr[obj.unit]]++;
     }
-    count++;
     console.log("correct_num:" + array.correct_num); //for debug
   }
 }
 
 //インタラクション
 async function firstInteraction(){
+  //正誤判定の配列
+  let first_arr = [];
   const jsonObject = JSON.parse(fs.readFileSync("./data/second_interaction.json", "utf-8"));
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
   let correctFlag = 0;
-  correct_arr = [0,1,0,1]; //for debug
-  console.log("correct_arr:" + correct_arr); //for debug
+  console.log("correct_arr:" + array.correct_arr); //for debug
   for (const obj of jsonObject) {
     io.emit("DISPLAY_SCRIPTS", obj.txt);
     if(count != 0) await speakScript("Japanese", "次に行くよ");
@@ -416,14 +368,14 @@ async function firstInteraction(){
     }
     //await sleep(3000);
     if(correctFlag == 0){
-      if(correct_arr[count] == 1){
+      if(array.correct_arr[count] == 1){
         await speakScript("Japanese", "間違えて発話していたよ。");
         await speakScript("Japanese", "正しい発話はこんな感じだよ。");
         io.emit("DISPLAY_ANSWER", obj.correctText);
         await speakScript(obj.lang, "\\rspd=70\\" + obj.practiceText);
         //await sleep(2000);
         io.emit("DISPLAY_ANSWER_BLANK");
-      }else if(correct_arr[count] == 0){
+      }else if(array.correct_arr[count] == 0){
         await speakScript("Japanese", "間違えて発話していたよ。");
         await speakScript("Japanese", "正しい発話はこんな感じだよ。");
         io.emit("DISPLAY_ANSWER", obj.correctText);
@@ -440,9 +392,9 @@ async function firstInteraction(){
     }else if(correctFlag == 1){
       await speakScript("Japanese", "良くできていたね。この調子で頑張ろう。");
       correctFlag = 0;
-      correct_arr2[count] = 1;
+      first_arr[count] = 1;
     }
-    console.log("correct_arr2:" + correct_arr2); //for debug
+    console.log("first_arr:" + first_arr); //for debug
     count++;
   }
   await speakScript("Japanese", "お疲れさま、最初のインタラクションは終わりだよ。");
@@ -451,6 +403,8 @@ async function firstInteraction(){
 }
 
 async function secondInteraction(){
+  //正誤判定の配列
+  let second_arr = [];
   await speakScript("Japanese", "それじゃあ2回目のインタラクションを始めるよ。");
   await speakScript("Japanese", "このインタラクションでは、僕が空欄部分を話すからもし間違えていたら、教えてほしいな");
   await speakScript("Japanese", "それじゃあ始めるよ");
@@ -458,10 +412,6 @@ async function secondInteraction(){
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
   let correctFlag = 0;
-  // correct_arr = [0,1,0,1]; //for debug
-  // correct_arr2 = [1,0,0,1]; //for debug
-  console.log("correct_arr:" + correct_arr); //for debug
-  console.log("correct_arr2:" + correct_arr2); //for debug
   for (const obj of jsonObject) {
     io.emit("DISPLAY_SCRIPTS", obj.txt);
     if(count != 0) await speakScript("Japanese", "それじゃあ次に行くね");
@@ -492,7 +442,7 @@ async function secondInteraction(){
       }
       if(correctFlag == 1){
         correctFlag = 0;
-        correct_arr3[count] = 1;
+        second_arr[count] = 1;
       }else if(correctFlag == 0){
         await sleep(3000);
         await speakScript("Japanese", "あれ、答えが画面に出てるみたいだよ");
@@ -506,7 +456,7 @@ async function secondInteraction(){
     }else{
       await speakScript("Japanese", "間違いはなかったんだね、わかったよ。");
       if(obj.correct == 1){
-        correct_arr3[count] = 1;
+        second_arr[count] = 1;
       }else if(obj.correct == 0){
         await sleep(3000);
         await speakScript("Japanese", "あれ、答えが画面に出てるみたいだよ");
@@ -518,7 +468,7 @@ async function secondInteraction(){
         io.emit("DISPLAY_ANSWER_BLANK");
       }
     }
-    console.log("correct_arr3:" + correct_arr3); //for debug
+    console.log("second_arr:" + second_arr); //for debug
     count++;
   }
   doneFlag = true;
