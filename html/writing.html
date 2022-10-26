@@ -8,15 +8,16 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <title>筆記テスト</title>
 </head>
-<body onload="pre_writingStart()">
+<body onload="start()">
     <div id="sentences" style="font-size: 2vw; text-align: center; ">
         <h2></h2>
     </div>
     <br>
     <div style="text-align: center; ">
-        <form name="form">
+        <form name="Form">
         <input type="text" name="textBox" value="">
-        <input type="button" value="決定" onclick="clickButton()">
+        <input type="text" name="dammy" style="display:none;">
+        <input type="button" value="決定" id="btn" onclick="clickButton()">
         </form>
     </div>
     <a href="/" style="position: absolute; bottom: 0;">Back to top page</a>

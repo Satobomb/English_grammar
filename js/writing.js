@@ -8,12 +8,12 @@ socket.on("BACK_TO_TOPPAGE", () => {
     location.href = "/";
 });
 
-function pre_writingStart(){
-    socket.emit("WRITING_TO_SERVER");
-}
+function start(){ socket.emit("WRITING_TO_SERVER"); }
 
 function clickButton(){
-    const text = document.form.textBox.value;
-    document.form.textBox.value = "";
-    socket.emit('ANSWERED', (text));
+    const text = document.Form.textBox.value;
+    if(text != ""){
+        document.Form.textBox.value = "";
+        socket.emit('ANSWERED', (text));
+    }
 }

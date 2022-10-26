@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>インタラクション</title>
+</head>
+<body>
+    <h2 style="text-align: center; ">注意書きや説明</h2>
+    <h3 style="text-align: center; ">発話の途中で止まってしまうとシステム側が終了したと認識してしまうので，空欄に入る単語が分かってから話し始めてください．</h3>
+    <h3 style="text-align: center; ">また，空欄に入る単語が分からない場合は空欄を飛ばして発話してください．</h3>
+    <div style="text-align: center; ">
+        <input type="button" class="btn" value="インタラクション開始" onclick="toInteraction()" /><br><br>
+    </div>
+    <a href="/" style="position: absolute; bottom: 0;">Back to top page</a>
+    
+    <script>
+        function toInteraction() {
+            location.href = "/interaction";
+        }
+    </script>
+</body>
+</html>
