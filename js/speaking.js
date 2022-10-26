@@ -8,7 +8,7 @@ jQuery(function($){ v.controls = false; });
 function play(){ v.play(); }
 function pause(){ v.pause(); }
 
-//特定の時間で止まる
+//時間指定で停止
 v.addEventListener('timeupdate', function() {
     switch (count) {
         case 1:
@@ -22,7 +22,7 @@ v.addEventListener('timeupdate', function() {
             break;
         case 4:
             if(v.currentTime >= 11){ v.pause(); count++; }
-        break;
+            break;
     }
     //デバッグ用
 	console.log(v.currentTime);
@@ -39,13 +39,6 @@ socket.on("DISPLAY_SCRIPTS", (text) => {
 });
 socket.on("DISPLAY_SCRIPTS_BLANK", () => {
     $('#scripts').html('');
-});
-socket.on("DISPLAY_ANSWER", (text) => {
-    $('#answer').html('');
-    $('#answer').html(text);
-});
-socket.on("DISPLAY_ANSWER_BLANK", () => {
-    $('#answer').html('');
 });
 socket.on("BACK_TO_TOPPAGE", () => {
     location.href = "/";

@@ -155,6 +155,13 @@ function getJs(req, res) {
       res.end();
     });
     break;
+  case "/css/speaking.css":
+    fs.readFile("./css/speaking.css", "UTF-8", function (err, data) {
+      res.writeHead(200, {"Content-Type": "text/css"});
+      res.write(data); 
+      res.end();
+    });
+    break;
   case "/libqi-js/libs/qimessaging/1.0/qimessaging.js":
     fs.readFile("./libqi-js/libs/qimessaging/1.0/qimessaging.js", "UTF-8", function (err, data) {
       res.writeHead(200, {"Content-Type": "text/plain"});
