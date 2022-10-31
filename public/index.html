@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link href="../css/top.css" rel="stylesheet"> -->
+    <title>実験</title>
+</head>
+<body>
+    <h1 style="text-align: center; ">実験</h1>
+    <form name="pullForm" style="text-align: center; ">
+        <select name="pullMenu">
+            <option value="">--------------------------</option>
+            <option value="./html/writing_top.html">筆記テスト</option>
+            <option value="./html/speaking_top.html">発話テスト</option>
+            <option value="./html/interaction_top.html">インタラクション</option>
+        </select>
+        <input type="button" value="決定" onclick="screenChange()"> 
+    </form>
+    <script>
+        function screenChange(){
+            pullSellect = document.pullForm.pullMenu.selectedIndex;
+            location.href = document.pullForm.pullMenu.options[pullSellect].value;
+        }
+    </script>
+</body>
+</html>
