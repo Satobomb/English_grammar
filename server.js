@@ -157,8 +157,8 @@ function getJs(req, res) {
       res.end();
     });
     break;
-  case "/libqi-js/libs/qimessaging/1.0/qimessaging.js":
-    fs.readFile("./libqi-js/libs/qimessaging/1.0/qimessaging.js", "UTF-8", function (err, data) {
+  case "/public/libqi-js/libs/qimessaging/1.0/qimessaging.js":
+    fs.readFile("./public/libqi-js/libs/qimessaging/1.0/qimessaging.js", "UTF-8", function (err, data) {
       res.writeHead(200, {"Content-Type": "text/plain"});
       res.write(data); 
       res.end();
