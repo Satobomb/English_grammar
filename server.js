@@ -260,7 +260,7 @@ async function post_speakingTest(){
 //インタラクション
 async function firstInteraction(){
   //正誤判定の配列
-  let first_arr = [];
+  let first_arr = Array(4).fill(0);
   const jsonObject = JSON.parse(fs.readFileSync("./data/first_interaction.json", "utf-8"));
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
@@ -318,12 +318,12 @@ async function firstInteraction(){
   }
   await speakScript("Japanese", "お疲れさま、最初のインタラクションは終わりだよ。");
   io.emit("DISPLAY_SCRIPTS_BLANK");
-  io.emit("BACK_TO_TOPPAGE");
+  //io.emit("BACK_TO_TOPPAGE");
 }
 
 async function secondInteraction(){
   //正誤判定の配列
-  let second_arr = [];
+  let second_arr = Array(4).fill(0);
   await speakScript("Japanese", "それじゃあ2回目のインタラクションを始めるよ。");
   await speakScript("Japanese", "このインタラクションでは、僕が空欄部分を話すからもし間違えていたら、教えてほしいな");
   await speakScript("Japanese", "それじゃあ始めるよ");
