@@ -149,6 +149,7 @@ io.sockets.on('connection', function (socket) {
   });
   socket.on('SPOKE_MOVIE', () => {
     speakFlag = true;
+    console.log("SPOKE");
   });
   socket.on('client_to_server', function (data) {
       io.sockets.emit('server_to_client', { value: data.value });
