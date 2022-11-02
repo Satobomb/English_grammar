@@ -1,9 +1,13 @@
 const socketio = require('socket.io');
-const http = require("http");
-const fs = require("fs");
-const server = http.createServer();
+const express = require('express');
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const app = express();
+const server = http.createServer(app);
 const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
 const strComparer = require('./modules/string-comparer');
+
 const unit_arr = {
   "3単元": 0,
   "過去形": 1,
@@ -13,169 +17,11 @@ const unit_arr = {
   "現在進行": 5
 };
 
-class Array {
-
-  constructor(correct_num, correct_arr){
-    this.correct_num = correct_num;
-    this.correct_arr = correct_arr;
-  }
-
-  async pre_writingTest(){
-    const jsonObject = JSON.parse(fs.readFileSync("./data/pre-writing_test.json", "utf-8"));
-    for (const obj of jsonObject) {
-      io.emit("DISPLAY_SENTENCES", obj.txt);
-      await answerCheck();
-      if(obj.key == answer) this.correct_num[unit_arr[obj.unit]]++;
-      console.log(this.correct_num); //for debug
-    }
-    console.log("事前筆記テスト終了時 : " + this.correct_num);
-    io.emit("BACK_TO_TOPPAGE");
-  }
-
-  async pre_speakingTest(){
-    const jsonObject = JSON.parse(fs.readFileSync("./data/pre-speaking_test.json", "utf-8"));
-    io.emit("DISPLAY_ANSWER_BLANK");
-    for (const obj of jsonObject) { 
-      io.emit("DISPLAY_SCRIPTS", obj.txt);
-      await io.emit("SPEAKING_TEST");
-      const result = await voiceRec('en-US');
-      const words = result.split(" ");
-      for(const data of words){
-        if(data === obj.key) this.correct_num[unit_arr[obj.unit]]++;
-      }
-      console.log("correct_num:" + this.correct_num); //for debug
-    }
-    //得意・不得意単元の振り分け(中心より下は不得意・上は得意)
-    let tmp_for_sort = (this.correct_num).concat(); //array copy
-    let median;
-    tmp_for_sort.sort();
-    median = tmp_for_sort[tmp_for_sort.length/2];
-    for(let i = 0;i < (this.correct_num).length; i++){
-      if(this.correct_num[i] >= median) this.correct_arr[i] = 1;
-      else                              this.correct_arr[i] = 0;
-    }
-    console.log("事前発話テスト終了時 : " + this.correct_num); //for debug
-    console.log("得意・不得意 : " + this.correct_arr); //for debug
-    io.emit("DISPLAY_SCRIPTS_BLANK");
-    io.emit("BACK_TO_TOPPAGE");
-  }
-}
-
-let array = new Array([], []);
-let syncFlag = false;
-let answerFlag = false;
-let doneFlag = false;
-let answer;
-
 // /* kuroshiro : Japanese Sentence => Hiragana, Katakana or Romaji */
 const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
 const Kuroshiro = require('kuroshiro');
 const kuroshiro = new Kuroshiro();
 kuroshiro.init(new KuromojiAnalyzer());
-
-server.on("request", getJs);
-server.listen(8080);
-console.log("Server running …");
-function getJs(req, res) {
-  let url = req.url;
-  console.log(url);
-  switch(url){
-  case "/":
-    fs.readFile("./html/index.html", "UTF-8", function (err, data) {
-      res.writeHead(200, {"Content-Type": "text/html"});
-      res.write(data);
-      res.end();
-    });
-    break;
-  case "/writing_top":
-    fs.readFile("./html/writing_top.html", "UTF-8", function (err, data) {
-      res.writeHead(200, {"Content-Type": "text/html"});
-      res.write(data);
-      res.end();
-    });
-    break;
-  case "/writing":
-    fs.readFile("./html/writing.html", "UTF-8", function (err, data) {
-      res.writeHead(200, {"Content-Type": "text/html"});
-      res.write(data);
-      res.end();
-    });
-    break;
-  case "/js/writing.js":
-    fs.readFile("./js/writing.js", "UTF-8", function (err, data) {
-      res.writeHead(200, {"Content-Type": "text/plain"});
-      res.write(data); 
-      res.end();
-    });
-    break; 
-  case "/speaking_top":
-    fs.readFile("./html/speaking_top.html", "UTF-8", function (err, data) {
-      res.writeHead(200, {"Content-Type": "text/html"});
-      res.write(data);
-      res.end();
-    });
-    break;
-  case "/speaking":
-    fs.readFile("./html/speaking.html", "UTF-8", function (err, data) {
-      res.writeHead(200, {"Content-Type": "text/html"});
-      res.write(data);
-      res.end();
-    });
-    break;
-  case "/js/speaking.js":
-  fs.readFile("./js/speaking.js", "UTF-8", function (err, data) {
-    res.writeHead(200, {"Content-Type": "text/plain"});
-    res.write(data); 
-    res.end();
-  });
-  break; 
-  case "/interaction_top":
-    fs.readFile("./html/interaction_top.html", "UTF-8", function (err, data) {
-      res.writeHead(200, {"Content-Type": "text/html"});
-      res.write(data);
-      res.end();
-    });
-    break;
-  case "/interaction":
-    fs.readFile("./html/interaction.html", "UTF-8", function (err, data) {
-      res.writeHead(200, {"Content-Type": "text/html"});
-      res.write(data);
-      res.end();
-    });
-    break;
-  case "/js/interaction.js":
-    fs.readFile("./js/interaction.js", "UTF-8", function (err, data) {
-      res.writeHead(200, {"Content-Type": "text/plain"});
-      res.write(data); 
-      res.end();
-    });
-    break;
-  case "/css/interaction.css":
-    fs.readFile("./css/interaction.css", "UTF-8", function (err, data) {
-      res.writeHead(200, {"Content-Type": "text/css"});
-      res.write(data); 
-      res.end();
-    });
-    break;
-  case "/libqi-js/libs/qimessaging/1.0/qimessaging.js":
-    fs.readFile("./libqi-js/libs/qimessaging/1.0/qimessaging.js", "UTF-8", function (err, data) {
-      res.writeHead(200, {"Content-Type": "text/plain"});
-      res.write(data); 
-      res.end();
-    });
-    break;
-  case "/movie/1.mp4":
-    // fs.readFile("./html/1.mp4", function (err, data) {
-    //   res.writeHead(200, {"Content-Type": "video/mp4"});
-    //   res.write(data); 
-    //   res.end();
-    // });
-    const data = fs.readFileSync("./movie/1.mp4");
-    res.write(data);
-    res.end();
-    break;  
-   } 
-}
 
 //soxをNode.jsから使うためのモジュール
 const recorder = require('node-record-lpcm16'); 
@@ -219,6 +65,63 @@ const recognizeSync = (lc) => {
 	})
 }
 
+class CorrectArray {
+
+  constructor(correct_num, correct_arr){
+    this.correct_num = correct_num;
+    this.correct_arr = correct_arr;
+  }
+
+  async pre_writingTest(){
+    const jsonObject = JSON.parse(fs.readFileSync("./data/pre-writing_test.json", "utf-8"));
+    for (const obj of jsonObject) {
+      io.emit("DISPLAY_SENTENCES", obj.txt);
+      await answerCheck();
+      if(obj.key == answer) this.correct_num[unit_arr[obj.unit]]++;
+      console.log(this.correct_num); //for debug
+    }
+    console.log("事前筆記テスト終了時 : " + this.correct_num);
+    io.emit("BACK_TO_TOPPAGE");
+  }
+  async pre_speakingTest(){
+    const jsonObject = JSON.parse(fs.readFileSync("./data/pre-speaking_test.json", "utf-8"));
+    io.emit("DISPLAY_ANSWER_BLANK");
+    for (const obj of jsonObject) { 
+      io.emit("DISPLAY_SCRIPTS", obj.txt);
+      await speakCheck();
+      const result = await voiceRec('en-US');
+      const words = result.split(" ");
+      for(const data of words){
+        if(data === obj.key) this.correct_num[unit_arr[obj.unit]]++;
+      }
+      console.log("correct_num:" + this.correct_num); //for debug
+    }
+    //得意・不得意単元の振り分け(中心より下は不得意・上は得意)
+    let tmp_for_sort = (this.correct_num).concat(); //array copy
+    let median;
+    tmp_for_sort.sort();
+    median = tmp_for_sort[tmp_for_sort.length/2];
+    for(let i = 0;i < (this.correct_num).length; i++){
+      if(this.correct_num[i] >= median) this.correct_arr[i] = 1;
+      else                              this.correct_arr[i] = 0;
+    }
+    console.log("事前発話テスト終了時 : " + this.correct_num); //for debug
+    console.log("得意・不得意 : " + this.correct_arr); //for debug
+    io.emit("BACK_TO_TOPPAGE");
+  }
+}
+
+let array = new CorrectArray(Array(6).fill(0), Array(6).fill(0));
+let syncFlag = false;
+let answerFlag = false;
+let speakFlag = false;
+let doneFlag = false;
+let answer;
+
+app.use(express.static(path.join(__dirname, "public")));
+server.listen(8080);
+console.log("Server running …");
+
 //双方向通信
 var io = socketio(server);
 
@@ -243,6 +146,10 @@ io.sockets.on('connection', function (socket) {
     answerFlag = true;
     console.log(text);
     answer = text;
+  });
+  socket.on('SPOKE_MOVIE', () => {
+    speakFlag = true;
+    console.log("SPOKE");
   });
   socket.on('client_to_server', function (data) {
       io.sockets.emit('server_to_client', { value: data.value });
@@ -310,6 +217,19 @@ function answerCheck() {
   });
 }
 
+function speakCheck() {
+  return new Promise((resolve) => {
+    io.emit("SPEAKING_TEST");
+    let checkFlagDemon = setInterval(() => {
+      if(speakFlag == true){
+        speakFlag = false;
+        clearInterval(checkFlagDemon);
+        resolve();
+      }
+    }, 500);
+  });
+}
+
 async function post_writingTest(){
   const jsonObject = JSON.parse(fs.readFileSync("./data/post-writing_test.json", "utf-8"));
   for (const obj of jsonObject) {
@@ -341,8 +261,8 @@ async function post_speakingTest(){
 //インタラクション
 async function firstInteraction(){
   //正誤判定の配列
-  let first_arr = [];
-  const jsonObject = JSON.parse(fs.readFileSync("./data/second_interaction.json", "utf-8"));
+  let first_arr = Array(4).fill(0);
+  const jsonObject = JSON.parse(fs.readFileSync("./data/first_interaction.json", "utf-8"));
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
   let correctFlag = 0;
@@ -399,16 +319,16 @@ async function firstInteraction(){
   }
   await speakScript("Japanese", "お疲れさま、最初のインタラクションは終わりだよ。");
   io.emit("DISPLAY_SCRIPTS_BLANK");
-  io.emit("BACK_TO_TOPPAGE");
+  //io.emit("BACK_TO_TOPPAGE");
 }
 
 async function secondInteraction(){
   //正誤判定の配列
-  let second_arr = [];
+  let second_arr = Array(4).fill(0);
   await speakScript("Japanese", "それじゃあ2回目のインタラクションを始めるよ。");
   await speakScript("Japanese", "このインタラクションでは、僕が空欄部分を話すからもし間違えていたら、教えてほしいな");
   await speakScript("Japanese", "それじゃあ始めるよ");
-  const jsonObject = JSON.parse(fs.readFileSync("./data/third_interaction.json", "utf-8"));
+  const jsonObject = JSON.parse(fs.readFileSync("./data/second_interaction.json", "utf-8"));
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
   let correctFlag = 0;
