@@ -1,9 +1,13 @@
 const socketio = require('socket.io');
-const http = require("http");
-const fs = require("fs");
-const server = http.createServer();
+const express = require('express');
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const app = express();
+const server = http.createServer(app);
 const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
 const strComparer = require('./modules/string-comparer');
+
 const unit_arr = {
   "3単元": 0,
   "過去形": 1,
@@ -13,7 +17,55 @@ const unit_arr = {
   "現在進行": 5
 };
 
-class Array {
+// /* kuroshiro : Japanese Sentence => Hiragana, Katakana or Romaji */
+const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
+const Kuroshiro = require('kuroshiro');
+const kuroshiro = new Kuroshiro();
+kuroshiro.init(new KuromojiAnalyzer());
+
+//soxをNode.jsから使うためのモジュール
+const recorder = require('node-record-lpcm16'); 
+//Cloud Speech-to-text APIを使うためのモジュール
+const speech = require('@google-cloud/speech'); 
+const client = new speech.SpeechClient();
+const recorderConfig = {
+  sampleRate: 16000,
+	channels: 1,
+	threshold: 0,
+	endOnSilence: true,
+	silence: '3.0',
+};
+const recognizeSync = (lc) => {
+	return new Promise((resolve, reject) => {
+		const request = {
+			config: {
+				encoding: 'LINEAR16',
+				sampleRateHertz: 16000,
+				languageCode: lc,
+			},
+			interimResults: false,
+		};
+    const recording = recorder.record(recorderConfig);
+		const recognizeStream = client
+			.streamingRecognize(request)
+			.on('error', reject)
+			.on('end', resolve)
+			.on('data', data => {
+				process.stdout.write(
+					data.results[0] && data.results[0].alternatives[0]
+            ? `学習者: ${data.results[0].alternatives[0].transcript}\n`
+						: '\n\nReached transcription time limit, press Ctrl+C\n'
+				)
+				resolve(data.results[0].alternatives[0].transcript);
+				recording.stop();
+			});
+		recording.stream()
+			.on('error', reject)
+			.pipe(recognizeStream);
+	})
+}
+
+class CorrectArray {
 
   constructor(correct_num, correct_arr){
     this.correct_num = correct_num;
@@ -31,13 +83,12 @@ class Array {
     console.log("事前筆記テスト終了時 : " + this.correct_num);
     io.emit("BACK_TO_TOPPAGE");
   }
-
   async pre_speakingTest(){
     const jsonObject = JSON.parse(fs.readFileSync("./data/pre-speaking_test.json", "utf-8"));
     io.emit("DISPLAY_ANSWER_BLANK");
     for (const obj of jsonObject) { 
       io.emit("DISPLAY_SCRIPTS", obj.txt);
-      await io.emit("SPEAKING_TEST");
+      await speakCheck();
       const result = await voiceRec('en-US');
       const words = result.split(" ");
       for(const data of words){
@@ -56,26 +107,22 @@ class Array {
     }
     console.log("事前発話テスト終了時 : " + this.correct_num); //for debug
     console.log("得意・不得意 : " + this.correct_arr); //for debug
-    io.emit("DISPLAY_SCRIPTS_BLANK");
     io.emit("BACK_TO_TOPPAGE");
   }
 }
 
-let array = new Array([], []);
+let array = new CorrectArray(Array(6).fill(0), Array(6).fill(0));
 let syncFlag = false;
 let answerFlag = false;
+let speakFlag = false;
 let doneFlag = false;
 let answer;
 
-// /* kuroshiro : Japanese Sentence => Hiragana, Katakana or Romaji */
-const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
-const Kuroshiro = require('kuroshiro');
-const kuroshiro = new Kuroshiro();
-kuroshiro.init(new KuromojiAnalyzer());
-
-server.on("request", getJs);
+app.use(express.static(path.join(__dirname, "public")));
 server.listen(8080);
 console.log("Server running …");
+<<<<<<< HEAD
+=======
 function getJs(req, res) {
   let url = req.url;
   console.log(url);
@@ -218,6 +265,7 @@ const recognizeSync = (lc) => {
 			.pipe(recognizeStream);
 	})
 }
+>>>>>>> develop
 
 //双方向通信
 var io = socketio(server);
@@ -243,6 +291,10 @@ io.sockets.on('connection', function (socket) {
     answerFlag = true;
     console.log(text);
     answer = text;
+  });
+  socket.on('SPOKE_MOVIE', () => {
+    speakFlag = true;
+    console.log("SPOKE");
   });
   socket.on('client_to_server', function (data) {
       io.sockets.emit('server_to_client', { value: data.value });
@@ -310,6 +362,19 @@ function answerCheck() {
   });
 }
 
+function speakCheck() {
+  return new Promise((resolve) => {
+    io.emit("SPEAKING_TEST");
+    let checkFlagDemon = setInterval(() => {
+      if(speakFlag == true){
+        speakFlag = false;
+        clearInterval(checkFlagDemon);
+        resolve();
+      }
+    }, 500);
+  });
+}
+
 async function post_writingTest(){
   const jsonObject = JSON.parse(fs.readFileSync("./data/post-writing_test.json", "utf-8"));
   for (const obj of jsonObject) {
@@ -341,8 +406,8 @@ async function post_speakingTest(){
 //インタラクション
 async function firstInteraction(){
   //正誤判定の配列
-  let first_arr = [];
-  const jsonObject = JSON.parse(fs.readFileSync("./data/second_interaction.json", "utf-8"));
+  let first_arr = Array(4).fill(0);
+  const jsonObject = JSON.parse(fs.readFileSync("./data/first_interaction.json", "utf-8"));
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
   let correctFlag = 0;
@@ -399,16 +464,16 @@ async function firstInteraction(){
   }
   await speakScript("Japanese", "お疲れさま、最初のインタラクションは終わりだよ。");
   io.emit("DISPLAY_SCRIPTS_BLANK");
-  io.emit("BACK_TO_TOPPAGE");
+  //io.emit("BACK_TO_TOPPAGE");
 }
 
 async function secondInteraction(){
   //正誤判定の配列
-  let second_arr = [];
+  let second_arr = Array(4).fill(0);
   await speakScript("Japanese", "それじゃあ2回目のインタラクションを始めるよ。");
   await speakScript("Japanese", "このインタラクションでは、僕が空欄部分を話すからもし間違えていたら、教えてほしいな");
   await speakScript("Japanese", "それじゃあ始めるよ");
-  const jsonObject = JSON.parse(fs.readFileSync("./data/third_interaction.json", "utf-8"));
+  const jsonObject = JSON.parse(fs.readFileSync("./data/second_interaction.json", "utf-8"));
   io.emit("DISPLAY_ANSWER_BLANK");
   let count = 0;
   let correctFlag = 0;
