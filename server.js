@@ -7,6 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
 const strComparer = require('./modules/string-comparer');
+const recognizer = require('./modules/recognizer');
 
 const unit_arr = {
   '3単元': 0,
@@ -17,53 +18,53 @@ const unit_arr = {
   '現在進行': 5
 };
 
-// /* kuroshiro : Japanese Sentence => Hiragana, Katakana or Romaji */
+// kuroshiro : Japanese Sentence => Hiragana, Katakana or Romaji
 const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
 const Kuroshiro = require('kuroshiro');
 const kuroshiro = new Kuroshiro();
 kuroshiro.init(new KuromojiAnalyzer());
 
-//soxをNode.jsから使うためのモジュール
-const recorder = require('node-record-lpcm16'); 
-//Cloud Speech-to-text APIを使うためのモジュール
-const speech = require('@google-cloud/speech'); 
-const client = new speech.SpeechClient();
-const recorderConfig = {
-  sampleRate: 16000,
-	channels: 1,
-	threshold: 0,
-	endOnSilence: true,
-	silence: '3.0',
-};
-const recognizeSync = (lc) => {
-	return new Promise((resolve, reject) => {
-		const request = {
-			config: {
-				encoding: 'LINEAR16',
-				sampleRateHertz: 16000,
-				languageCode: lc,
-			},
-			interimResults: false,
-		};
-    const recording = recorder.record(recorderConfig);
-		const recognizeStream = client
-			.streamingRecognize(request)
-			.on('error', reject)
-			.on('end', resolve)
-			.on('data', data => {
-				process.stdout.write(
-					data.results[0] && data.results[0].alternatives[0]
-            ? `学習者: ${data.results[0].alternatives[0].transcript}\n`
-						: '\n\nReached transcription time limit, press Ctrl+C\n'
-				)
-				resolve(data.results[0].alternatives[0].transcript);
-				recording.stop();
-			});
-		recording.stream()
-			.on('error', reject)
-			.pipe(recognizeStream);
-	})
-}
+// //soxをNode.jsから使うためのモジュール
+// const recorder = require('node-record-lpcm16'); 
+// //Cloud Speech-to-text APIを使うためのモジュール
+// const speech = require('@google-cloud/speech'); 
+// const client = new speech.SpeechClient();
+// const recorderConfig = {
+//   sampleRate: 16000,
+// 	channels: 1,
+// 	threshold: 0,
+// 	endOnSilence: true,
+// 	silence: '3.0',
+// };
+// const recognizeSync = (lc) => {
+// 	return new Promise((resolve, reject) => {
+// 		const request = {
+// 			config: {
+// 				encoding: 'LINEAR16',
+// 				sampleRateHertz: 16000,
+// 				languageCode: lc,
+// 			},
+// 			interimResults: false,
+// 		};
+//     const recording = recorder.record(recorderConfig);
+// 		const recognizeStream = client
+// 			.streamingRecognize(request)
+// 			.on('error', reject)
+// 			.on('end', resolve)
+// 			.on('data', data => {
+// 				process.stdout.write(
+// 					data.results[0] && data.results[0].alternatives[0]
+//             ? `学習者: ${data.results[0].alternatives[0].transcript}\n`
+// 						: '\n\nReached transcription time limit, press Ctrl+C\n'
+// 				)
+// 				resolve(data.results[0].alternatives[0].transcript);
+// 				recording.stop();
+// 			});
+// 		recording.stream()
+// 			.on('error', reject)
+// 			.pipe(recognizeStream);
+// 	})
+// }
 
 class CorrectArray {
 
@@ -158,7 +159,7 @@ io.sockets.on('connection', function (socket) {
 });
 
 async function voiceRec(language){
-  const result = await recognizeSync(language);
+  const result = await recognizer.recognizeSync(language);
   if   (result != null) return result;
   else console.log(`bad recognize, one more time.`);
 }
