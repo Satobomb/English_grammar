@@ -90,6 +90,7 @@ class CorrectArray {
     for (const obj of jsonObject) { 
       io.emit('DISPLAY_SCRIPTS', obj.txt);
       await speakCheck();
+      console.log("aa");
       const result = await voiceRec('en-US');
       const words = result.split(' ');
       for(const data of words){
