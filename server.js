@@ -8,6 +8,11 @@ const server = http.createServer(app);
 const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
 const strComparer = require('./modules/string-comparer');
 const recognizer = require('./modules/recognizer');
+// kuroshiro : Japanese Sentence => Hiragana, Katakana or Romaji
+const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
+const Kuroshiro = require('kuroshiro');
+const kuroshiro = new Kuroshiro();
+kuroshiro.init(new KuromojiAnalyzer());
 
 const unit_arr = {
   '3単元': 0,
@@ -17,54 +22,6 @@ const unit_arr = {
   '現在完了': 4,
   '現在進行': 5
 };
-
-// kuroshiro : Japanese Sentence => Hiragana, Katakana or Romaji
-const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
-const Kuroshiro = require('kuroshiro');
-const kuroshiro = new Kuroshiro();
-kuroshiro.init(new KuromojiAnalyzer());
-
-// //soxをNode.jsから使うためのモジュール
-// const recorder = require('node-record-lpcm16'); 
-// //Cloud Speech-to-text APIを使うためのモジュール
-// const speech = require('@google-cloud/speech'); 
-// const client = new speech.SpeechClient();
-// const recorderConfig = {
-//   sampleRate: 16000,
-// 	channels: 1,
-// 	threshold: 0,
-// 	endOnSilence: true,
-// 	silence: '3.0',
-// };
-// const recognizeSync = (lc) => {
-// 	return new Promise((resolve, reject) => {
-// 		const request = {
-// 			config: {
-// 				encoding: 'LINEAR16',
-// 				sampleRateHertz: 16000,
-// 				languageCode: lc,
-// 			},
-// 			interimResults: false,
-// 		};
-//     const recording = recorder.record(recorderConfig);
-// 		const recognizeStream = client
-// 			.streamingRecognize(request)
-// 			.on('error', reject)
-// 			.on('end', resolve)
-// 			.on('data', data => {
-// 				process.stdout.write(
-// 					data.results[0] && data.results[0].alternatives[0]
-//             ? `学習者: ${data.results[0].alternatives[0].transcript}\n`
-// 						: '\n\nReached transcription time limit, press Ctrl+C\n'
-// 				)
-// 				resolve(data.results[0].alternatives[0].transcript);
-// 				recording.stop();
-// 			});
-// 		recording.stream()
-// 			.on('error', reject)
-// 			.pipe(recognizeStream);
-// 	})
-// }
 
 class CorrectArray {
 
@@ -90,7 +47,6 @@ class CorrectArray {
     for (const obj of jsonObject) { 
       io.emit('DISPLAY_SCRIPTS', obj.txt);
       await speakCheck();
-      console.log("aa");
       const result = await voiceRec('en-US');
       const words = result.split(' ');
       for(const data of words){
@@ -194,20 +150,7 @@ async function doJsonCommands(jsonPath){
   for (const obj of jsonObject) await speakScript(obj.lang, obj.msg);
 }
 
-function speakScript(lang, msg) {
-  console.log('ロボット:' + msg); //for debug
-  return new Promise((resolve) => {
-    io.emit('SPEAKING_TO_CLIENT', lang, msg);
-    let checkFlagDemon = setInterval(() => {
-      if(flag.robotSpoke == true){
-        flag.robotSpoke = false;
-        clearInterval(checkFlagDemon);
-        resolve();
-      }
-    }, 500);
-  });
-}
-
+//筆記テスト用
 function answerCheck() {
   return new Promise((resolve) => {
     let checkFlagDemon = setInterval(() => {
@@ -219,10 +162,24 @@ function answerCheck() {
     }, 500);
   });
 }
-
+//発話テスト用
 function speakCheck() {
   return new Promise((resolve) => {
     io.emit('SPEAKING_TEST');
+    let checkFlagDemon = setInterval(() => {
+      if(flag.charactorSpoke == true){
+        flag.charactorSpoke = false;
+        clearInterval(checkFlagDemon);
+        resolve();
+      }
+    }, 500);
+  });
+}
+//インタラクション用
+function speakScript(lang, msg) {
+  console.log('ロボット:' + msg); //for debug
+  return new Promise((resolve) => {
+    io.emit('SPEAKING_TO_CLIENT', lang, msg);
     let checkFlagDemon = setInterval(() => {
       if(flag.robotSpoke == true){
         flag.robotSpoke = false;
