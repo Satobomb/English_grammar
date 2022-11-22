@@ -25,6 +25,9 @@ v.addEventListener('timeupdate', function() {
         case 4:
             if(v.currentTime >= 11){ v.pause(); count++; socket.emit("SPOKE_MOVIE"); }
             break;
+        case 5:
+            if(v.currentTime >= 17){ v.pause(); count++; socket.emit("SPOKE_MOVIE"); }
+            break;
     }
     //デバッグ用
 	console.log(v.currentTime);
