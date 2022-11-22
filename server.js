@@ -81,7 +81,7 @@ server.listen(8080);
 console.log('Server running …');
 
 //双方向通信
-var io = socketio(server);
+let io = socketio(server);
 
 io.sockets.on('connection', function (socket) {
   socket.on('WRITING_TO_SERVER', () => {
