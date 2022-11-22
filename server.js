@@ -70,9 +70,7 @@ class CorrectArray {
 }
 
 class FlagGathering {
-  constructor(){
-    this.robotSpoke = this.writeAnswer = this.charactorSpoke = this.interactionDone = false;
-  }
+  constructor(){ this.robotSpoke = this.writeAnswer = this.charactorSpoke = this.interactionDone = false; }
 }
 let array = new CorrectArray(Array(6).fill(0), Array(6).fill(0));
 let flag = new FlagGathering();
